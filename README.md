@@ -56,7 +56,7 @@ const signedBlock = {
 
 brMultisignature.isAuthorized({ledgerConfig}, signedBlock, (err, result) {
   if(err) {
-    throw new Error('An error occurred when authorizing the block:', err);
+    throw new Error('An error occurred when authorizing the block: ' + err.message);
   }
   if(!result) {
     console.log('FAIL: The block was not authorized.');
