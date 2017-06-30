@@ -1,22 +1,22 @@
 {
-  "name": "bedrock-ledger-authz-multisignature",
+  "name": "bedrock-ledger-guard-signature",
   "version": "0.0.1-0",
-  "description": "bedrock-ledger-authz-multisignature",
+  "description": "bedrock-ledger-guard-signature",
   "main": "./lib",
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature.git"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature.git"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature#readme",
+  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature#readme",
+  "dependencies": {
+    "did-io": "digitalbazaar/did-io#master"
+  },
   "peerDependencies": {
     "bedrock": "^1.4.1",
     "bedrock-did-client": "^1.0.0",
     "bedrock-ledger": "^0.3.5"
-  },
-  "dependencies": {
-    "did-io": "digitalbazaar/did-io#master"
   }
 }

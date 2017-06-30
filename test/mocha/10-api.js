@@ -6,7 +6,7 @@
 
 const bedrock = require('bedrock');
 const async = require('async');
-const brMultisignature = require('bedrock-ledger-authz-multisignature');
+const brMultisignature = require('bedrock-ledger-guard-signature');
 const expect = global.chai.expect;
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);

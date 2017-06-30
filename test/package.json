@@ -1,8 +1,8 @@
 {
-  "name": "bedrock-ledger-authz-multisignature-test",
+  "name": "bedrock-ledger-guard-signature-test",
   "version": "0.0.1-0",
   "private": true,
-  "description": "bedrock-ledger-authz-multisignature",
+  "description": "bedrock-ledger-guard-signature",
   "main": "./lib",
   "scripts": {
     "test": "node --preserve-symlinks test test",
@@ -10,17 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature.git"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature.git"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-authz-multisignature#readme",
+  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature#readme",
   "dependencies": {
     "async": "^2.4.1",
     "bedrock": "^1.4.1",
     "bedrock-did-client": "^1.0.0",
     "bedrock-ledger": "digitalbazaar/bedrock-ledger#cm3",
+    "bedrock-ledger-context": "digitalbazaar/bedrock-ledger-context#master",
     "bedrock-mongodb": "^3.2.3",
     "bedrock-permission": "^2.4.3",
     "bedrock-test": "^1.2.0",
