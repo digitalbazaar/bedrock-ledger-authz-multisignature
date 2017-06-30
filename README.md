@@ -1,45 +1,30 @@
-# bedrock-ledger-authz-multisignature
+# bedrock-ledger-guard-signature
 
-[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-authz-multisignature)](https://ci.digitalbazaar.com/job/bedrock-ledger-authz-multisignature)
+[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-guard-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-guard-signature)
 
-An authorization subsystem for bedrock-ledger that determines if M of N
-digital signatures on a block satisfy the requirements defined in the the
+An guard for bedrock-ledger that determines if M of N
+digital signatures on a document satisfy the requirements defined in the the
 ledger's configuration.
 
-## The Authz-Multisignature API
-- isAuthorized(ledgerMeta, block, callback(err, result))
+## The Ledger Guard Signature API
+- isValide(guardConfig, signedDocument, callback(err, result))
 
 ## Configuration
 For documentation on configuration, see [config.js](./lib/config.js).
 
 ## Usage Example
 ```javascript
-const brMultisignature = require('bedrock-ledger-authz-multisignature');
+const brGuardSignature = require('bedrock-ledger-guard-signature');
 
-const ledgerConfig = {
-  '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/1',
-  type: 'WebLedgerConfigurationBlock',
-  ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-  consensusMethod: {
-    type: 'Continuity2017'
-  },
-  configurationBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-    ],
-    minimumSignaturesRequired: 1
-  },
-  eventBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-    ],
-    minimumSignaturesRequired: 1
-  }
+const guardConfig = {
+  type: 'SignatureGuard2017',
+  approvedSigner: [
+    'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+  ],
+  minimumSignaturesRequired: 1
 };
-const signedBlock = {
+
+const signedDocument = {
   "@context": "https://w3id.org/webledger/v1",
   "id": "did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/2",
   "type": "WebLedgerEventBlock",
@@ -54,14 +39,14 @@ const signedBlock = {
   }
 }
 
-brMultisignature.isAuthorized({ledgerConfig}, signedBlock, (err, result) {
+brGuardSignature.isValid(guardConfig, signedDocument, (err, result) {
   if(err) {
-    throw new Error('An error occurred when authorizing the block: ' + err.message);
+    throw new Error('An error occurred when validating the block: ' + err.message);
   }
   if(!result) {
-    console.log('FAIL: The block was not authorized.');
+    console.log('FAIL: The block was not validated.');
     return;
   }
-  console.log('SUCCESS: The block was authorized.');
+  console.log('SUCCESS: The block was validated.');
 });
 ```
