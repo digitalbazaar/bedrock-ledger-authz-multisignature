@@ -3,6 +3,7 @@ module.exports = mock;
 
 const ledgers = mock.ledgers = {};
 const blocks = mock.blocks = {};
+const events = mock.events = {};
 const keys = mock.keys = {};
 
 mock.authorizedSigners = {
@@ -21,211 +22,125 @@ mock.authorizedSigners = {
 ledgers.alpha = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
-    id: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/1',
-    type: 'WebLedgerConfigurationBlock',
-    ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-    consensusMethod: {
-      type: 'Continuity2017'
-    },
-    configurationBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-      ],
-      minimumSignaturesRequired: 1
-    },
-    eventBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-      ],
-      minimumSignaturesRequired: 1
-    },
-    signature: {
-      type: 'RsaSignature2017',
-      created: '2017-10-24T05:33:31Z',
-      creator: 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/144',
-      domain: 'example.com',
-      signatureValue: 'eyiOiJJ0eXAK...EjXkgFWFO'
-    }
+    type: 'WebLedgerConfigurationEvent',
+    operation: 'Config',
+    input: [{
+      type: 'WebLedgerConfiguration',
+      ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
+      consensusMethod: {
+        type: 'UnilateralConsensus2017'
+      },
+      eventGuard: [{
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+        ],
+        minimumSignaturesRequired: 1
+      }, {
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerConfigurationEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+        ],
+        minimumSignaturesRequired: 1
+      }]
+    }]
   }
 };
 ledgers.beta = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
-    id: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227/blocks/1',
-    type: 'WebLedgerConfigurationBlock',
-    ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
-    consensusMethod: {
-      type: 'Continuity2017'
-    },
-    configurationBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-        'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-      ],
-      minimumSignaturesRequired: 2
-    },
-    eventBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-        'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-      ],
-      minimumSignaturesRequired: 2
-    },
-    signature: {
-      type: 'RsaSignature2017',
-      created: '2017-10-24T05:33:31Z',
-      creator: 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/144',
-      domain: 'example.com',
-      signatureValue: 'eyiOiJJ0eXAK...EjXkgFWFO'
-    }
+    type: 'WebLedgerConfigurationEvent',
+    operation: 'Config',
+    input: [{
+      type: 'WebLedgerConfiguration',
+      ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
+      consensusMethod: {
+        type: 'UnilateralConsensus2017'
+      },
+      eventGuard: [{
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
+        ],
+        minimumSignaturesRequired: 2
+      }, {
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerConfigurationEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
+        ],
+        minimumSignaturesRequired: 2
+      }]
+    }]
   }
 };
+
 // this ledger has approved signer that is a publicKey
 // configuration requires 3 signatures
 ledgers.gamma = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
-    id: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2/blocks/1',
-    type: 'WebLedgerConfigurationBlock',
-    ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-    consensusMethod: {
-      type: 'Continuity2017'
-    },
-    configurationBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-        'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
-        'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'
-      ],
-      minimumSignaturesRequired: 3
-    },
-    eventBlockAuthorizationMethod: {
-      type: 'LinkedDataSignature2015',
-      approvedSigner: [
-        'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-        'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
-      ],
-      minimumSignaturesRequired: 2
-    },
-    signature: {
-      type: 'RsaSignature2017',
-      created: '2017-10-24T05:33:31Z',
-      creator: 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/144',
-      domain: 'example.com',
-      signatureValue: 'eyiOiJJ0eXAK...EjXkgFWFO'
-    }
+    type: 'WebLedgerConfigurationEvent',
+    operation: 'Config',
+    input: [{
+      type: 'WebLedgerConfiguration',
+      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+      consensusMethod: {
+        type: 'UnilateralConsensus2017'
+      },
+      eventGuard: [{
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
+        ],
+        minimumSignaturesRequired: 2
+      }, {
+        type: 'SignatureGuard2017',
+        supportedEventType: 'WebLedgerConfigurationEvent',
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
+          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'
+        ],
+        minimumSignaturesRequired: 3
+      }]
+    }]
   }
 };
 
-// event blocks
-blocks.event = {};
-blocks.event.alpha = {
+events.alpha = {
   '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/2',
-  type: 'WebLedgerEventBlock',
-  event: {},
-  previousBlock: 'did:v1:e7adbe7-79f2-425a-9dfb-76a234782f30/blocks/1',
-  previousBlockHash:
-    'ni:///sha-256;cGBSKHn2cBJ563oSt3SAf4OxZXXfwtSxj1xFO5LtkGkW'
+  type: 'WebLedgerEvent',
+  operation: 'Create',
+  input: [{
+    '@context': 'https://schema.org/',
+    value: 'a2035188-372a-4afb-9cf2-7d99baebae88'
+  }]
 };
-blocks.event.beta = {
+events.beta = {
   '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227/blocks/2',
-  type: 'WebLedgerEventBlock',
-  event: {},
-  previousBlock: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227/blocks/1',
-  previousBlockHash:
-    'ni:///sha-256;cGBSKHn2cBJ563oSt3SAf4OxZXXfwtSxj1xFO5LtkGkW'
+  type: 'WebLedgerEvent',
+  operation: 'Create',
+  input: [{
+    '@context': 'https://schema.org/',
+    value: '456866ac-dc86-4a62-81ab-6c15554d985c'
+  }]
 };
-blocks.event.gamma = {
+events.gamma = {
   '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2/blocks/2',
-  type: 'WebLedgerEventBlock',
-  event: {},
-  previousBlock: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2/blocks/1',
-  previousBlockHash:
-    'ni:///sha-256;cGBSKHn2cBJ563oSt3SAf4OxZXXfwtSxj1xFO5LtkGkW'
-};
-
-// configuration blocks
-blocks.config = {};
-blocks.config.alpha = {
-  '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/1',
-  type: 'WebLedgerConfigurationBlock',
-  ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-  consensusMethod: {
-    type: 'Continuity2017'
-  },
-  configurationBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-    ],
-    minimumSignaturesRequired: 1
-  },
-  eventBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-    ],
-    minimumSignaturesRequired: 1
-  }
-};
-blocks.config.beta = {
-  '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227/blocks/1',
-  type: 'WebLedgerConfigurationBlock',
-  ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
-  consensusMethod: {
-    type: 'Continuity2017'
-  },
-  configurationBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-    ],
-    minimumSignaturesRequired: 1
-  },
-  eventBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-    ],
-    minimumSignaturesRequired: 2
-  }
-};
-blocks.config.gamma = {
-  '@context': 'https://w3id.org/webledger/v1',
-  id: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2/blocks/1',
-  type: 'WebLedgerConfigurationBlock',
-  ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-  consensusMethod: {
-    type: 'Continuity2017'
-  },
-  configurationBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
-    ],
-    minimumSignaturesRequired: 1
-  },
-  eventBlockAuthorizationMethod: {
-    type: 'LinkedDataSignature2015',
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
-    ],
-    minimumSignaturesRequired: 2
-  }
+  type: 'WebLedgerEvent',
+  operation: 'Create',
+  input: [{
+    '@context': 'https://schema.org/',
+    value: '8bbb6850-4afc-40d0-b8ff-d776844196bd'
+  }]
 };
 
 keys.alpha = {
