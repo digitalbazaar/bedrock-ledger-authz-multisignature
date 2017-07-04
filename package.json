@@ -12,7 +12,8 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature#readme",
   "dependencies": {
-    "did-io": "digitalbazaar/did-io#master"
+    "did-io": "digitalbazaar/did-io#master",
+    "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature"
   },
   "peerDependencies": {
     "bedrock": "^1.4.1",
