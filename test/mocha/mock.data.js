@@ -30,16 +30,22 @@ ledgers.alpha = {
       consensusMethod: {
         type: 'UnilateralConsensus2017'
       },
-      eventGuard: [{
+      validationEventGuard: [{
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
         ],
         minimumSignaturesRequired: 1
       }, {
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerConfigurationEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerConfigurationEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
         ],
@@ -59,9 +65,12 @@ ledgers.beta = {
       consensusMethod: {
         type: 'UnilateralConsensus2017'
       },
-      eventGuard: [{
+      validationEventGuard: [{
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
           'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
@@ -69,7 +78,10 @@ ledgers.beta = {
         minimumSignaturesRequired: 2
       }, {
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerConfigurationEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerConfigurationEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
           'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
@@ -93,9 +105,12 @@ ledgers.gamma = {
       consensusMethod: {
         type: 'UnilateralConsensus2017'
       },
-      eventGuard: [{
+      validationEventGuard: [{
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
           'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
@@ -103,7 +118,10 @@ ledgers.gamma = {
         minimumSignaturesRequired: 2
       }, {
         type: 'SignatureGuard2017',
-        supportedEventType: 'WebLedgerConfigurationEvent',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerConfigurationEvent']
+        }],
         approvedSigner: [
           'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
           'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',

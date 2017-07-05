@@ -25,7 +25,7 @@ describe('isValid API', () => {
         }, callback),
         check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
           results.signEvent,
-          mockData.ledgers.alpha.config.input[0].eventGuard[0],
+          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
           (err, result) => {
             should.not.exist(err);
             expect(result).to.be.a('boolean');
@@ -50,7 +50,7 @@ describe('isValid API', () => {
       check: ['signEventTwo', (results, callback) => {
         brSignatureGuard.isValid(
           results.signEventTwo,
-          mockData.ledgers.beta.config.input[0].eventGuard[0],
+          mockData.ledgers.beta.config.input[0].validationEventGuard[0],
           (err, result) => {
             should.not.exist(err);
             result.should.be.a('boolean');
@@ -75,7 +75,7 @@ describe('isValid API', () => {
         check: ['signEventTwo', (results, callback) => {
           brSignatureGuard.isValid(
             results.signEventTwo,
-            mockData.ledgers.gamma.config.input[0].eventGuard[0],
+            mockData.ledgers.gamma.config.input[0].validationEventGuard[0],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -100,7 +100,7 @@ describe('isValid API', () => {
         check: ['signEventTwo', (results, callback) => {
           brSignatureGuard.isValid(
             results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].eventGuard[0],
+            mockData.ledgers.beta.config.input[0].validationEventGuard[0],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -130,7 +130,7 @@ describe('isValid API', () => {
         check: ['signEventThree', (results, callback) => {
           brSignatureGuard.isValid(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].eventGuard[0],
+            mockData.ledgers.beta.config.input[0].validationEventGuard[0],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -149,7 +149,7 @@ describe('isValid API', () => {
         }, callback),
         check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
           results.signEvent,
-          mockData.ledgers.alpha.config.input[0].eventGuard[0],
+          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
           (err, result) => {
             should.not.exist(err);
             result.should.be.a('boolean');
@@ -170,7 +170,7 @@ describe('isValid API', () => {
         }, callback),
         check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
           results.signEvent,
-          mockData.ledgers.alpha.config.input[0].eventGuard[0],
+          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
           (err, result) => {
             should.not.exist(err);
             result.should.be.a('boolean');
@@ -191,7 +191,7 @@ describe('isValid API', () => {
         }, callback),
         check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
           results.signEvent,
-          mockData.ledgers.alpha.config.input[0].eventGuard[0],
+          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
           (err, result) => {
             should.not.exist(err);
             result.should.be.a('boolean');
@@ -213,7 +213,7 @@ describe('isValid API', () => {
         }, callback),
         check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
           results.signEvent,
-          mockData.ledgers.alpha.config.input[0].eventGuard[1],
+          mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
           (err, result) => {
             should.not.exist(err);
             expect(result).to.be.a('boolean');
@@ -237,7 +237,7 @@ describe('isValid API', () => {
       }, callback)],
       check: ['signEventTwo', (results, callback) => brSignatureGuard.isValid(
         results.signEventTwo,
-        mockData.ledgers.beta.config.input[0].eventGuard[1],
+        mockData.ledgers.beta.config.input[0].validationEventGuard[1],
         (err, result) => {
           should.not.exist(err);
           result.should.be.a('boolean');
@@ -260,7 +260,7 @@ describe('isValid API', () => {
       }, callback)],
       check: ['signEventTwo', (results, callback) => brSignatureGuard.isValid(
         results.signEventTwo,
-        mockData.ledgers.gamma.config.input[0].eventGuard[1],
+        mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
         (err, result) => {
           should.not.exist(err);
           result.should.be.a('boolean');
@@ -290,7 +290,7 @@ describe('isValid API', () => {
         check: ['signEventThree', (results, callback) =>
           brSignatureGuard.isValid(
             results.signEventThree,
-            mockData.ledgers.gamma.config.input[0].eventGuard[1],
+            mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -314,7 +314,7 @@ describe('isValid API', () => {
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
           brSignatureGuard.isValid(results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].eventGuard[1],
+            mockData.ledgers.beta.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -344,7 +344,7 @@ describe('isValid API', () => {
         check: ['signEventThree', (results, callback) =>
           brSignatureGuard.isValid(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].eventGuard[1],
+            mockData.ledgers.beta.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -364,7 +364,7 @@ describe('isValid API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.isValid(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventGuard[1],
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -386,7 +386,7 @@ describe('isValid API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.isValid(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventGuard[1],
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
@@ -408,7 +408,7 @@ describe('isValid API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.isValid(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventGuard[1],
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
               result.should.be.a('boolean');
