@@ -36,7 +36,7 @@ describe('isValid API', () => {
       }, done);
     });
 
-    it('authorizes a block that requires two signatures', done => async.auto({
+    it('validates an event that requires two signatures', done => async.auto({
       signEventOne: callback => signDocument({
         creator: mockData.authorizedSigners.alpha,
         privateKeyPem: mockData.keys.alpha.privateKey,
@@ -60,7 +60,7 @@ describe('isValid API', () => {
       }]
     }, done));
 
-    it('authorizes a block when approvedSigners specifies a publicKey', done =>
+    it('validates an event when approvedSigners specifies a publicKey', done =>
       async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -85,7 +85,7 @@ describe('isValid API', () => {
         }]
       }, done));
 
-    it('does not authorize block signed twice by same owner', done =>
+    it('does not validate event signed twice by same owner', done =>
       async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -110,7 +110,7 @@ describe('isValid API', () => {
         }]
       }, done));
 
-    it('authorizes a block with two valid signatures and one invalid',
+    it('validates an event with two valid signatures and one invalid',
       done => async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -140,7 +140,7 @@ describe('isValid API', () => {
         }]
       }, done));
 
-    it('does not authorize if the public key cannot be validated', done => {
+    it('does not validate if the public key cannot be validated', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.gamma,
@@ -160,7 +160,7 @@ describe('isValid API', () => {
       }, done);
     });
 
-    // the public key id does not match the private key used to sign the block
+    // the public key id does not match the private key used to sign the event
     it('returns `false` if the signature is not valid', done => {
       async.auto({
         signEvent: callback => signDocument({
@@ -181,8 +181,8 @@ describe('isValid API', () => {
       }, done);
     });
 
-    // this block is signed by an owner that is not in `approvedSigner`
-    it('does not authorize when owner is not an approved signer', done => {
+    // this event is signed by an owner that is not in `approvedSigner`
+    it('does not validate when owner is not an approved signer', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.beta,
@@ -201,10 +201,10 @@ describe('isValid API', () => {
         ]
       }, done);
     });
-  }); // end event blocks
+  }); // end WebLedgerEvent
 
   describe('WebLedgerConfigurationEvent', () => {
-    it('authorizes a propery signed event', done => {
+    it('validates a propery signed event', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -224,7 +224,7 @@ describe('isValid API', () => {
       }, done);
     });
 
-    it('authorizes a block that requires two signatures', done => async.auto({
+    it('validates an event that requires two signatures', done => async.auto({
       signEventOne: callback => signDocument({
         creator: mockData.authorizedSigners.alpha,
         privateKeyPem: mockData.keys.alpha.privateKey,
@@ -247,7 +247,7 @@ describe('isValid API', () => {
       ]
     }, done));
 
-    it('does not authorize a block with 2 of 3 signatures', done => async.auto({
+    it('does not validate an event with 2/3 signatures', done => async.auto({
       signEventOne: callback => signDocument({
         creator: mockData.authorizedSigners.alpha,
         privateKeyPem: mockData.keys.alpha.privateKey,
@@ -270,7 +270,7 @@ describe('isValid API', () => {
       ]
     }, done));
 
-    it('authorizes a block with 3 of 3 signatures', done =>
+    it('validates an event with 3 of 3 signatures', done =>
       async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -300,7 +300,7 @@ describe('isValid API', () => {
         ]
       }, done));
 
-    it('does not authorize block signed twice by same owner', done =>
+    it('does not validate event signed twice by same owner', done =>
       async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -324,7 +324,7 @@ describe('isValid API', () => {
         ]
       }, done));
 
-    it('authorizes a block with two valid signatures and one invalid',
+    it('validates an event with two valid signatures and one invalid',
       done => async.auto({
         signEventOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -354,7 +354,7 @@ describe('isValid API', () => {
         ]
       }, done));
 
-    it('does not authorize if the public key cannot be validated', done => {
+    it('does not validate if the public key cannot be validated', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.gamma,
@@ -375,7 +375,7 @@ describe('isValid API', () => {
       }, done);
     });
 
-    // the public key id does not match the private key used to sign the block
+    // the public key id does not match the private key used to sign the event
     it('returns `false` if the signature is not valid', done => {
       async.auto({
         signEvent: callback => signDocument({
@@ -397,8 +397,8 @@ describe('isValid API', () => {
       }, done);
     });
 
-    // this block is signed by an owner that is not in `approvedSigner`
-    it('does not authorize when owner is not an approved signer', done => {
+    // this event is signed by an owner that is not in `approvedSigner`
+    it('does not validate when owner is not an approved signer', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.beta,
@@ -418,7 +418,7 @@ describe('isValid API', () => {
         ]
       }, done);
     });
-  });
+  }); // end WebLedgerConfigurationEvent
 });
 
 function signDocument(options, callback) {
