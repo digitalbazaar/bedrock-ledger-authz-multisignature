@@ -26,16 +26,29 @@ const guardConfig = {
 
 const signedDocument = {
   "@context": "https://w3id.org/webledger/v1",
-  "id": "did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3/blocks/2",
-  "type": "WebLedgerEventBlock",
-  "event": ['ni:///sha-256;249bac6ec5d5f9298fe9d3b5c9d6095dde04df2a52cf485b49e3061af8b0b929'],
-  "previousBlock": "did:v1:e7adbe7-79f2-425a-9dfb-76a234782f30/blocks/1",
-  "previousBlockHash": "ni:///sha-256;09965dfb512bfd1179eed6c3d03ccf9361d3a310a86ae76f54eac3cca49fc6e7",
+  "type": "WebLedgerEvent",
+  "operation": "Create",
+  "input": [
+    {
+      "@context": "https://w3id.org/test/v1",
+      "id": "https://example.com/events/dd5090e9-13f0-48d1-89a3-af9ffb092fcf",
+      "type": "Concert",
+      "name": "Big Band Concert in New York City",
+      "startDate": "2017-07-14T21:30",
+      "location": "https://example.org/the-venue",
+      "offers": {
+        "type": "Offer",
+        "price": "13.00",
+        "priceCurrency": "USD",
+        "url": "https://example.com/purchase/309433"
+      }
+    }
+  ],
   "signature": {
     "type": "LinkedDataSignature2015",
-    "created": "2017-06-29T18:18:18Z",
-    "creator": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1",
-    "signatureValue": "EXsPuARfjJ...1/PuekmCz7EQ=="
+    "created": "2017-07-10T14:10:24Z",
+    "creator": "did:v1:0a02328e-ba9d-43f8-830c-f05105495d66/keys/1",
+    "signatureValue": "IyEQBDNGEMt0YMpVQgrn...HF9FZpyDlFw=="
   }
 }
 
