@@ -7,7 +7,7 @@ digital signatures on a document satisfy the requirements defined in the the
 ledger's configuration.
 
 ## The Ledger Guard Signature API
-- isValid(guardConfig, signedDocument, callback(err, result))
+- isValid(signedDocument, guardConfig, callback(err, result))
 
 ## Configuration
 For documentation on configuration, see [config.js](./lib/config.js).
@@ -39,14 +39,14 @@ const signedDocument = {
   }
 }
 
-brGuardSignature.isValid(guardConfig, signedDocument, (err, result) {
+brGuardSignature.isValid(signedDocument, guardConfig, (err, result) {
   if(err) {
-    throw new Error('An error occurred when validating the block: ' + err.message);
+    throw new Error('An error occurred when validating the document: ' + err.message);
   }
   if(!result) {
-    console.log('FAIL: The block was not validated.');
+    console.log('FAIL: The document was not validated.');
     return;
   }
-  console.log('SUCCESS: The block was validated.');
+  console.log('SUCCESS: The document was validated.');
 });
 ```
