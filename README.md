@@ -2,12 +2,12 @@
 
 [![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-guard-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-guard-signature)
 
-An guard for bedrock-ledger that determines if M of N
+A guard for bedrock-ledger that determines if M of N
 digital signatures on a document satisfy the requirements defined in the the
 ledger's configuration.
 
 ## The Ledger Guard Signature API
-- isValide(guardConfig, signedDocument, callback(err, result))
+- isValid(guardConfig, signedDocument, callback(err, result))
 
 ## Configuration
 For documentation on configuration, see [config.js](./lib/config.js).
