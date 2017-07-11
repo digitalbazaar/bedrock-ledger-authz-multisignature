@@ -2,7 +2,7 @@
 
 [![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-guard-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-guard-signature)
 
-A guard for bedrock-ledger that determines if M of N
+A guard for [bedrock-ledger] that determines if M of N
 digital signatures on a document satisfy the requirements defined in the the
 ledger's configuration.
 
@@ -63,3 +63,5 @@ brGuardSignature.isValid(signedDocument, guardConfig, (err, result) {
   console.log('SUCCESS: The document was validated.');
 });
 ```
+
+[bedrock-ledger]: https://github.com/digitalbazaar/bedrock-ledger
