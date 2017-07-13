@@ -14,7 +14,7 @@ jsigs.use('jsonld', bedrock.jsonld);
 
 const mockData = require('./mock.data');
 
-describe('isValid API', () => {
+describe('validateEvent API', () => {
   describe('WebLedgerEvent', () => {
     it('validates a propery signed event', done => {
       async.auto({
@@ -23,19 +23,17 @@ describe('isValid API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: mockData.events.alpha
         }, callback),
-        check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
-          results.signEvent,
-          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
-          (err, result) => {
-            should.not.exist(err);
-            expect(result).to.be.a('boolean');
-            result.should.be.true;
-            callback();
-          })
+        check: ['signEvent', (results, callback) =>
+          brSignatureGuard.validateEvent(
+            results.signEvent,
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            err => {
+              should.not.exist(err);
+              callback();
+            })
         ]
       }, done);
     });
-
     it('validates an event that requires two signatures', done => async.auto({
       signEventOne: callback => signDocument({
         creator: mockData.authorizedSigners.alpha,
@@ -48,18 +46,15 @@ describe('isValid API', () => {
         doc: results.signEventOne
       }, callback)],
       check: ['signEventTwo', (results, callback) => {
-        brSignatureGuard.isValid(
+        brSignatureGuard.validateEvent(
           results.signEventTwo,
           mockData.ledgers.beta.config.input[0].validationEventGuard[0],
-          (err, result) => {
+          err => {
             should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.true;
             callback();
           });
       }]
     }, done));
-
     it('validates an event when approvedSigners specifies a publicKey', done =>
       async.auto({
         signEventOne: callback => signDocument({
@@ -73,18 +68,15 @@ describe('isValid API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) => {
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEventTwo,
             mockData.ledgers.gamma.config.input[0].validationEventGuard[0],
-            (err, result) => {
+            err => {
               should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.true;
               callback();
             });
         }]
       }, done));
-
     it('does not validate event signed twice by same owner', done =>
       async.auto({
         signEventOne: callback => signDocument({
@@ -98,13 +90,18 @@ describe('isValid API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) => {
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEventTwo,
             mockData.ledgers.beta.config.input[0].validationEventGuard[0],
-            (err, result) => {
-              should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.false;
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.event.should.be.an('object');
+              details.trustedSigners.should.be.an('object');
+              details.signatureCount.should.equal(2);
+              details.verifiedSignatures.should.equal(1);
+              details.minimumSignaturesRequired.should.equal(2);
+              details.keyResults.should.be.an('array');
               callback();
             });
         }]
@@ -128,13 +125,11 @@ describe('isValid API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) => {
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEventThree,
             mockData.ledgers.beta.config.input[0].validationEventGuard[0],
-            (err, result) => {
+            err => {
               should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.true;
               callback();
             });
         }]
@@ -147,36 +142,46 @@ describe('isValid API', () => {
           privateKeyPem: mockData.keys.gamma.privateKey,
           doc: mockData.events.alpha
         }, callback),
-        check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
-          results.signEvent,
-          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
-          (err, result) => {
-            should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.false;
-            callback();
-          })
+        check: ['signEvent', (results, callback) =>
+          brSignatureGuard.validateEvent(
+            results.signEvent,
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.verifiedSignatures.should.equal(0);
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.gamma);
+              details.keyResults[0].error.should.contain(
+                'URL could not be dereferenced');
+              callback();
+            })
         ]
       }, done);
     });
 
     // the public key id does not match the private key used to sign the event
-    it('returns `false` if the signature is not valid', done => {
+    it('returns `ValidationError` if the signature is not valid', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
+          // using wrong private key
           privateKeyPem: mockData.keys.delta.privateKey,
           doc: mockData.events.alpha
         }, callback),
-        check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
-          results.signEvent,
-          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
-          (err, result) => {
-            should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.false;
-            callback();
-          })
+        check: ['signEvent', (results, callback) =>
+          brSignatureGuard.validateEvent(
+            results.signEvent,
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.alpha);
+              callback();
+            })
         ]
       }, done);
     });
@@ -189,15 +194,19 @@ describe('isValid API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: mockData.events.alpha
         }, callback),
-        check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
-          results.signEvent,
-          mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
-          (err, result) => {
-            should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.false;
-            callback();
-          })
+        check: ['signEvent', (results, callback) =>
+          brSignatureGuard.validateEvent(
+            results.signEvent,
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].error.should.contain('not trusted');
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.beta);
+              callback();
+            })
         ]
       }, done);
     });
@@ -211,15 +220,16 @@ describe('isValid API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: mockData.ledgers.alpha.config
         }, callback),
-        check: ['signEvent', (results, callback) => brSignatureGuard.isValid(
-          results.signEvent,
-          mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
-          (err, result) => {
-            should.not.exist(err);
-            expect(result).to.be.a('boolean');
-            result.should.be.true;
-            callback();
-          })
+        check: ['signEvent', (results, callback) =>
+          brSignatureGuard.validateEvent(
+            results.signEvent,
+            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
+            (err, result) => {
+              should.not.exist(err);
+              expect(result).to.be.a('boolean');
+              result.should.be.true;
+              callback();
+            })
         ]
       }, done);
     });
@@ -235,15 +245,16 @@ describe('isValid API', () => {
         privateKeyPem: mockData.keys.beta.privateKey,
         doc: results.signEventOne
       }, callback)],
-      check: ['signEventTwo', (results, callback) => brSignatureGuard.isValid(
-        results.signEventTwo,
-        mockData.ledgers.beta.config.input[0].validationEventGuard[1],
-        (err, result) => {
-          should.not.exist(err);
-          result.should.be.a('boolean');
-          result.should.be.true;
-          callback();
-        })
+      check: ['signEventTwo', (results, callback) =>
+        brSignatureGuard.validateEvent(
+          results.signEventTwo,
+          mockData.ledgers.beta.config.input[0].validationEventGuard[1],
+          (err, result) => {
+            should.not.exist(err);
+            result.should.be.a('boolean');
+            result.should.be.true;
+            callback();
+          })
       ]
     }, done));
 
@@ -258,15 +269,16 @@ describe('isValid API', () => {
         privateKeyPem: mockData.keys.beta.privateKey,
         doc: results.signEventOne
       }, callback)],
-      check: ['signEventTwo', (results, callback) => brSignatureGuard.isValid(
-        results.signEventTwo,
-        mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
-        (err, result) => {
-          should.not.exist(err);
-          result.should.be.a('boolean');
-          result.should.be.false;
-          callback();
-        })
+      check: ['signEventTwo', (results, callback) =>
+        brSignatureGuard.validateEvent(
+          results.signEventTwo,
+          mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
+          (err, result) => {
+            should.not.exist(err);
+            result.should.be.a('boolean');
+            result.should.be.false;
+            callback();
+          })
       ]
     }, done));
 
@@ -288,7 +300,7 @@ describe('isValid API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) =>
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEventThree,
             mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
             (err, result) => {
@@ -313,7 +325,7 @@ describe('isValid API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
-          brSignatureGuard.isValid(results.signEventTwo,
+          brSignatureGuard.validateEvent(results.signEventTwo,
             mockData.ledgers.beta.config.input[0].validationEventGuard[1],
             (err, result) => {
               should.not.exist(err);
@@ -342,7 +354,7 @@ describe('isValid API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) =>
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEventThree,
             mockData.ledgers.beta.config.input[0].validationEventGuard[1],
             (err, result) => {
@@ -362,7 +374,7 @@ describe('isValid API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
@@ -384,7 +396,7 @@ describe('isValid API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
@@ -406,7 +418,7 @@ describe('isValid API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.isValid(
+          brSignatureGuard.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
             (err, result) => {
