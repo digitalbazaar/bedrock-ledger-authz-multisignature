@@ -5,7 +5,6 @@
 
 'use strict';
 
-const bedrock = require('bedrock');
 const brValidator = require('bedrock-ledger-guard-signature');
 const mockData = require('./mock.data');
 
