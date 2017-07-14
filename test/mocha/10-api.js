@@ -8,7 +8,6 @@
 const bedrock = require('bedrock');
 const async = require('async');
 const brSignatureGuard = require('bedrock-ledger-guard-signature');
-const expect = global.chai.expect;
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);
 
@@ -26,7 +25,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
               should.not.exist(err);
               callback();
@@ -48,7 +47,7 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) => {
         brSignatureGuard.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.beta.config.input[0].validationEventGuard[0],
+          mockData.ledgers.beta.config.input[0].eventValidator[0],
           err => {
             should.not.exist(err);
             callback();
@@ -70,7 +69,7 @@ describe('validateEvent API', () => {
         check: ['signEventTwo', (results, callback) => {
           brSignatureGuard.validateEvent(
             results.signEventTwo,
-            mockData.ledgers.gamma.config.input[0].validationEventGuard[0],
+            mockData.ledgers.gamma.config.input[0].eventValidator[0],
             err => {
               should.not.exist(err);
               callback();
@@ -92,7 +91,7 @@ describe('validateEvent API', () => {
         check: ['signEventTwo', (results, callback) => {
           brSignatureGuard.validateEvent(
             results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].validationEventGuard[0],
+            mockData.ledgers.beta.config.input[0].eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -127,7 +126,7 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) => {
           brSignatureGuard.validateEvent(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].validationEventGuard[0],
+            mockData.ledgers.beta.config.input[0].eventValidator[0],
             err => {
               should.not.exist(err);
               callback();
@@ -145,7 +144,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -173,7 +172,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -197,7 +196,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[0],
+            mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -223,11 +222,9 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
-            (err, result) => {
+            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            err => {
               should.not.exist(err);
-              expect(result).to.be.a('boolean');
-              result.should.be.true;
               callback();
             })
         ]
@@ -248,11 +245,9 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) =>
         brSignatureGuard.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.beta.config.input[0].validationEventGuard[1],
-          (err, result) => {
+          mockData.ledgers.beta.config.input[0].eventValidator[1],
+          err => {
             should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.true;
             callback();
           })
       ]
@@ -272,11 +267,12 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) =>
         brSignatureGuard.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
-          (err, result) => {
-            should.not.exist(err);
-            result.should.be.a('boolean');
-            result.should.be.false;
+          mockData.ledgers.gamma.config.input[0].eventValidator[1],
+          err => {
+            should.exist(err);
+            const details = err.details;
+            details.signatureCount.should.equal(2);
+            details.minimumSignaturesRequired.should.equal(3);
             callback();
           })
       ]
@@ -302,11 +298,9 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEventThree,
-            mockData.ledgers.gamma.config.input[0].validationEventGuard[1],
-            (err, result) => {
+            mockData.ledgers.gamma.config.input[0].eventValidator[1],
+            err => {
               should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.true;
               callback();
             })
         ]
@@ -326,11 +320,16 @@ describe('validateEvent API', () => {
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
           brSignatureGuard.validateEvent(results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].validationEventGuard[1],
-            (err, result) => {
-              should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.false;
+            mockData.ledgers.beta.config.input[0].eventValidator[1],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.event.should.be.an('object');
+              details.trustedSigners.should.be.an('object');
+              details.signatureCount.should.equal(2);
+              details.verifiedSignatures.should.equal(1);
+              details.minimumSignaturesRequired.should.equal(2);
+              details.keyResults.should.be.an('array');
               callback();
             })
         ]
@@ -356,11 +355,9 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].validationEventGuard[1],
-            (err, result) => {
+            mockData.ledgers.beta.config.input[0].eventValidator[1],
+            err => {
               should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.true;
               callback();
             })
         ]
@@ -376,11 +373,16 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
-            (err, result) => {
-              should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.false;
+            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.verifiedSignatures.should.equal(0);
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.gamma);
+              details.keyResults[0].error.should.contain(
+                'URL could not be dereferenced');
               callback();
             })
         ]
@@ -388,7 +390,7 @@ describe('validateEvent API', () => {
     });
 
     // the public key id does not match the private key used to sign the event
-    it('returns `false` if the signature is not valid', done => {
+    it('returns `ValidationError` if the signature is not valid', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -398,11 +400,13 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
-            (err, result) => {
-              should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.false;
+            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.alpha);
               callback();
             })
         ]
@@ -420,11 +424,14 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brSignatureGuard.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].validationEventGuard[1],
-            (err, result) => {
-              should.not.exist(err);
-              result.should.be.a('boolean');
-              result.should.be.false;
+            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.keyResults[0].verified.should.be.false;
+              details.keyResults[0].error.should.contain('not trusted');
+              details.keyResults[0].publicKey.should.equal(
+                mockData.authorizedSigners.beta);
               callback();
             })
         ]

@@ -27,11 +27,9 @@ ledgers.alpha = {
     input: [{
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-      consensusMethod: {
-        type: 'UnilateralConsensus2017'
-      },
-      validationEventGuard: [{
-        type: 'SignatureGuard2017',
+      consensusMethod: 'UnilateralConsensus2017',
+      eventValidator: [{
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerEvent']
@@ -41,7 +39,7 @@ ledgers.alpha = {
         ],
         minimumSignaturesRequired: 1
       }, {
-        type: 'SignatureGuard2017',
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerConfigurationEvent']
@@ -62,11 +60,9 @@ ledgers.beta = {
     input: [{
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
-      consensusMethod: {
-        type: 'UnilateralConsensus2017'
-      },
-      validationEventGuard: [{
-        type: 'SignatureGuard2017',
+      consensusMethod: 'UnilateralConsensus2017',
+      eventValidator: [{
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerEvent']
@@ -77,7 +73,7 @@ ledgers.beta = {
         ],
         minimumSignaturesRequired: 2
       }, {
-        type: 'SignatureGuard2017',
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerConfigurationEvent']
@@ -102,11 +98,9 @@ ledgers.gamma = {
     input: [{
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-      consensusMethod: {
-        type: 'UnilateralConsensus2017'
-      },
-      validationEventGuard: [{
-        type: 'SignatureGuard2017',
+      consensusMethod: 'UnilateralConsensus2017',
+      eventValidator: [{
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerEvent']
@@ -117,7 +111,7 @@ ledgers.gamma = {
         ],
         minimumSignaturesRequired: 2
       }, {
-        type: 'SignatureGuard2017',
+        type: 'SignatureValidator2017',
         eventFilter: [{
           type: 'EventTypeFilter',
           eventType: ['WebLedgerConfigurationEvent']
