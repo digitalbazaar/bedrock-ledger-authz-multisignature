@@ -7,7 +7,7 @@
 
 const bedrock = require('bedrock');
 const async = require('async');
-const brSignatureGuard = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-guard-signature');
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);
 
@@ -23,7 +23,7 @@ describe('validateEvent API', () => {
           doc: mockData.events.alpha
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
@@ -45,7 +45,7 @@ describe('validateEvent API', () => {
         doc: results.signEventOne
       }, callback)],
       check: ['signEventTwo', (results, callback) => {
-        brSignatureGuard.validateEvent(
+        brValidator.validateEvent(
           results.signEventTwo,
           mockData.ledgers.beta.config.input[0].eventValidator[0],
           err => {
@@ -67,7 +67,7 @@ describe('validateEvent API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) => {
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEventTwo,
             mockData.ledgers.gamma.config.input[0].eventValidator[0],
             err => {
@@ -89,7 +89,7 @@ describe('validateEvent API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) => {
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEventTwo,
             mockData.ledgers.beta.config.input[0].eventValidator[0],
             err => {
@@ -124,7 +124,7 @@ describe('validateEvent API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) => {
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEventThree,
             mockData.ledgers.beta.config.input[0].eventValidator[0],
             err => {
@@ -142,7 +142,7 @@ describe('validateEvent API', () => {
           doc: mockData.events.alpha
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
@@ -170,7 +170,7 @@ describe('validateEvent API', () => {
           doc: mockData.events.alpha
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
@@ -194,7 +194,7 @@ describe('validateEvent API', () => {
           doc: mockData.events.alpha
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[0],
             err => {
@@ -220,7 +220,7 @@ describe('validateEvent API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[1],
             err => {
@@ -243,7 +243,7 @@ describe('validateEvent API', () => {
         doc: results.signEventOne
       }, callback)],
       check: ['signEventTwo', (results, callback) =>
-        brSignatureGuard.validateEvent(
+        brValidator.validateEvent(
           results.signEventTwo,
           mockData.ledgers.beta.config.input[0].eventValidator[1],
           err => {
@@ -265,7 +265,7 @@ describe('validateEvent API', () => {
         doc: results.signEventOne
       }, callback)],
       check: ['signEventTwo', (results, callback) =>
-        brSignatureGuard.validateEvent(
+        brValidator.validateEvent(
           results.signEventTwo,
           mockData.ledgers.gamma.config.input[0].eventValidator[1],
           err => {
@@ -296,7 +296,7 @@ describe('validateEvent API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEventThree,
             mockData.ledgers.gamma.config.input[0].eventValidator[1],
             err => {
@@ -319,7 +319,7 @@ describe('validateEvent API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
-          brSignatureGuard.validateEvent(results.signEventTwo,
+          brValidator.validateEvent(results.signEventTwo,
             mockData.ledgers.beta.config.input[0].eventValidator[1],
             err => {
               should.exist(err);
@@ -353,7 +353,7 @@ describe('validateEvent API', () => {
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEventThree,
             mockData.ledgers.beta.config.input[0].eventValidator[1],
             err => {
@@ -371,7 +371,7 @@ describe('validateEvent API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[1],
             err => {
@@ -398,7 +398,7 @@ describe('validateEvent API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[1],
             err => {
@@ -422,7 +422,7 @@ describe('validateEvent API', () => {
           doc: mockData.ledgers.alpha.config
         }, callback),
         check: ['signEvent', (results, callback) =>
-          brSignatureGuard.validateEvent(
+          brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[1],
             err => {
