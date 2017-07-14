@@ -2,24 +2,31 @@
 
 [![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-guard-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-guard-signature)
 
-A guard for [bedrock-ledger] that determines if M of N
+A validator for [bedrock-ledger] that determines if M of N
 digital signatures on a document satisfy the requirements defined in the the
 ledger's configuration.
 
-## The Ledger Guard Signature API
-- isValid(signedDocument, guardConfig, callback(err, result))
+## The Validator API
+- validateConfiguration(validatorConfig, callback(err))
+- validateEvent(signedDocument, validatorConfig, callback(err))
+- mustValidateEvent(signedDocument, validatorConfig, callback(err, result))
 
 ## Configuration
 For documentation on configuration, see [config.js](./lib/config.js).
 
 ## Usage Example
 ```javascript
-const brGuardSignature = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-guard-signature');
 
-const guardConfig = {
-  type: 'SignatureGuard2017',
+const validatorConfig = {
+  type: 'SignatureValidator2017',
+  eventFilter: [{
+    type: 'EventTypeFilter',
+    eventType: ['WebLedgerEvent']
+  }],  
   approvedSigner: [
     'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+    'did:v1:be0d2a4a-583f-4a8b-98c8-73bdf046bfd1/keys/1'
   ],
   minimumSignaturesRequired: 1
 };
@@ -47,18 +54,38 @@ const signedDocument = {
   "signature": {
     "type": "LinkedDataSignature2015",
     "created": "2017-07-10T14:10:24Z",
-    "creator": "did:v1:0a02328e-ba9d-43f8-830c-f05105495d66/keys/1",
+    "creator": "did:v1:be0d2a4a-583f-4a8b-98c8-73bdf046bfd1/keys/1",
     "signatureValue": "IyEQBDNGEMt0YMpVQgrn...HF9FZpyDlFw=="
   }
 }
 
-brGuardSignature.isValid(signedDocument, guardConfig, (err, result) {
+// when ledgers are created, or configuration changes are made, consensus
+// algorithms should validate the validator configuration using the
+// `validateConfiguration` API
+brValidator.validateConfiguration(validatorConfig, err => {
   if(err) {
-    throw new Error('An error occurred when validating the document: ' + err.message);
+    throw new Error('An error occurred when validating the configuration: ' + err.message);
+  }
+  console.log('SUCCESS: The configuration was validated.');
+});
+
+// consensus algorithms use the `mustValidateEvent` API to determine if this
+// validator is designed to operate on a particular event
+brValidator.mustValidateEvent(signedDocument, validatorConfig, (err, result) => {
+  if(err) {
+    throw new Error('An error occurred: ' + err.message);
   }
   if(!result) {
-    console.log('FAIL: The document was not validated.');
-    return;
+    console.log('The `validateEvent` API should NOT be used for this event.');
+  }
+  console.log('The `validateEvent` API should be used for this event.');
+});
+
+// if the `mustValidateEvent` API returns true, then consensus algorithms should
+// call the `validateEvent` API for the event
+brValidator.validateEvent(signedDocument, validatorConfig, err => {
+  if(err) {
+    throw new Error('An error occurred when validating the document: ' + err.message);
   }
   console.log('SUCCESS: The document was validated.');
 });
