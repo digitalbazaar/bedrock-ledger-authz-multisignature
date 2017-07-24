@@ -1,6 +1,6 @@
-# bedrock-ledger-guard-signature
+# bedrock-ledger-validator-signature
 
-[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-guard-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-guard-signature)
+[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-validator-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-validator-signature)
 
 A validator for [bedrock-ledger] that determines if M of N
 digital signatures on a document satisfy the requirements defined in the the
@@ -16,7 +16,7 @@ For documentation on configuration, see [config.js](./lib/config.js).
 
 ## Usage Example
 ```javascript
-const brValidator = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-validator-signature');
 
 const validatorConfig = {
   type: 'SignatureValidator2017',

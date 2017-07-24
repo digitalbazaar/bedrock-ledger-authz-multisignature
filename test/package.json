@@ -1,21 +1,11 @@
 {
-  "name": "bedrock-ledger-guard-signature-test",
+  "name": "bedrock-ledger-validator-signature-test",
   "version": "0.0.1-0",
   "private": true,
-  "description": "bedrock-ledger-guard-signature",
-  "main": "./lib",
   "scripts": {
     "test": "node --preserve-symlinks test test",
     "watch": "grunt watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature.git"
-  },
-  "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature/issues"
-  },
-  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature#readme",
   "dependencies": {
     "async": "^2.4.1",
     "bedrock": "^1.4.1",

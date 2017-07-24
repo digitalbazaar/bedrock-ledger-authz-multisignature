@@ -2,7 +2,6 @@ const mock = {};
 module.exports = mock;
 
 const ledgers = mock.ledgers = {};
-const blocks = mock.blocks = {};
 const events = mock.events = {};
 const keys = mock.keys = {};
 

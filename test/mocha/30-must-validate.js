@@ -5,7 +5,7 @@
 
 'use strict';
 
-const brValidator = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-validator-signature');
 const mockData = require('./mock.data');
 
 describe('mustValidateEvent API', () => {

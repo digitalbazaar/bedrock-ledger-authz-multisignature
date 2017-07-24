@@ -7,7 +7,7 @@
 
 const bedrock = require('bedrock');
 const async = require('async');
-const brValidator = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-validator-signature');
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);
 

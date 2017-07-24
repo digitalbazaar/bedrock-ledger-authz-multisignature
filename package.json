@@ -1,16 +1,16 @@
 {
-  "name": "bedrock-ledger-guard-signature",
+  "name": "bedrock-ledger-validator-signature",
   "version": "0.0.1-0",
-  "description": "bedrock-ledger-guard-signature",
+  "description": "bedrock-ledger-validator-signature",
   "main": "./lib",
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature.git"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature.git"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-guard-signature#readme",
+  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature#readme",
   "dependencies": {
     "did-io": "digitalbazaar/did-io#master",
     "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature"

@@ -6,7 +6,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const brValidator = require('bedrock-ledger-guard-signature');
+const brValidator = require('bedrock-ledger-validator-signature');
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);
 
