@@ -18,7 +18,7 @@
   "peerDependencies": {
     "bedrock": "^1.4.1",
     "bedrock-did-client": "^1.1.0",
-    "bedrock-ledger": "^0.3.5",
+    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#cm4",
     "bedrock-validation": "^2.2.1"
   }
 }
