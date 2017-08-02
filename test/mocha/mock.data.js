@@ -15,7 +15,8 @@ mock.authorizedSigners = {
   // public/private key mismatch
   delta: 'did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1',
   // fully valid signer
-  epsilon: 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1'
+  epsilon_1: 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
+  epsilon_2: 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'
 };
 
 ledgers.alpha = {
@@ -121,6 +122,80 @@ ledgers.gamma = {
           'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'
         ],
         minimumSignaturesRequired: 3
+      }]
+    }]
+  }
+};
+
+// this ledger has an approved signer (epsilon) that has two public keys
+// configuration requires 1 signatures
+ledgers.delta = {
+  config: {
+    '@context': 'https://w3id.org/webledger/v1',
+    type: 'WebLedgerConfigurationEvent',
+    operation: 'Config',
+    input: [{
+      type: 'WebLedgerConfiguration',
+      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+      consensusMethod: 'UnilateralConsensus2017',
+      eventValidator: [{
+        type: 'SignatureValidator2017',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerEvent']
+        }],
+        approvedSigner: [
+          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+        ],
+        minimumSignaturesRequired: 1
+      }, {
+        type: 'SignatureValidator2017',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerConfigurationEvent']
+        }],
+        approvedSigner: [
+          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+        ],
+        minimumSignaturesRequired: 1
+      }]
+    }]
+  }
+};
+
+// this ledger has an approved signer (epsilon) that has two public keys
+// configuration requires 2 signatures
+ledgers.epsilon = {
+  config: {
+    '@context': 'https://w3id.org/webledger/v1',
+    type: 'WebLedgerConfigurationEvent',
+    operation: 'Config',
+    input: [{
+      type: 'WebLedgerConfiguration',
+      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+      consensusMethod: 'UnilateralConsensus2017',
+      eventValidator: [{
+        type: 'SignatureValidator2017',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerEvent']
+        }],
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
+          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+        ],
+        minimumSignaturesRequired: 2
+      }, {
+        type: 'SignatureValidator2017',
+        eventFilter: [{
+          type: 'EventTypeFilter',
+          eventType: ['WebLedgerConfigurationEvent']
+        }],
+        approvedSigner: [
+          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
+          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+        ],
+        minimumSignaturesRequired: 2
       }]
     }]
   }
@@ -307,8 +382,8 @@ keys.delta = {
     'gSQRmrM9jgxutpwAQBZ0rWQlzwkp60T3OTPqsAvrt1COzdWCMmCN\n' +
     '-----END RSA PRIVATE KEY-----'
 };
-// epsilon: valid keypair
-keys.epsilon = {
+// epsilon: has two valid keypairs
+keys.epsilon_1 = {
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwIjS6bkpr+xR/+JCL0KF\n' +
     '24ZOHEmX/4ASBhSfKh0vGb5plKFuAOumNj5y/CzdgkqenhtcbrMunHuzPqYdTUJB\n' +
@@ -344,6 +419,45 @@ keys.epsilon = {
     '+FqzAoGAHM2v90bEbN/TNFv7OODWeK7HBRKBNigMVktXBpfCAFOm+cSfMlsoQTr3\n' +
     '4xiV0oxUFjPHA6qt0hGsk7/0P1Pe15Kg5n6+w2JzFpN5ix7DWus57PBKbMUkE64y\n' +
     'KBFLr5ANLqWLaVrSw5Uep1s5VvXyOrltUN/1SUoCoNZuM/FakRc=\n' +
+    '-----END RSA PRIVATE KEY-----'
+};
+// epsilon: has two valid keypairs
+keys.epsilon_2 = {
+  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
+    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvfj/ZG9AgsfTyytb+Zou\n' +
+    'iT24VXLfo/LUXO/Z3C+8XiBIBMFHlLc//0zQM/wjIpGczYgFqEac2OpKFTcciDxp\n' +
+    '0uw4m44+OPI/FYMjddpsv8/PLV8iaOY7mZ7tgoCdZhzFRm70i7YHYCfvgGuowL1l\n' +
+    'MjlUBbrcGKjBr3JpZHgaCE6Upol+j+fZvyEFjwXAwHSCSIawxfMaxEXi/Qux9hiT\n' +
+    'lC5Xza0JclT5ZlKTlmFxiA3Q448GBHCZfIrzy2VCVvWPJ9FD9RU95Tep7xUDaAfu\n' +
+    '5Maxz56QoadsZiP1ajrcFJgFYZYAkgog6a9BMWpZC3lmOzl3iciMK/zcDGaE6MRY\n' +
+    'eQIDAQAB\n' +
+    '-----END PUBLIC KEY-----',
+  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
+    'MIIEpAIBAAKCAQEAvfj/ZG9AgsfTyytb+ZouiT24VXLfo/LUXO/Z3C+8XiBIBMFH\n' +
+    'lLc//0zQM/wjIpGczYgFqEac2OpKFTcciDxp0uw4m44+OPI/FYMjddpsv8/PLV8i\n' +
+    'aOY7mZ7tgoCdZhzFRm70i7YHYCfvgGuowL1lMjlUBbrcGKjBr3JpZHgaCE6Upol+\n' +
+    'j+fZvyEFjwXAwHSCSIawxfMaxEXi/Qux9hiTlC5Xza0JclT5ZlKTlmFxiA3Q448G\n' +
+    'BHCZfIrzy2VCVvWPJ9FD9RU95Tep7xUDaAfu5Maxz56QoadsZiP1ajrcFJgFYZYA\n' +
+    'kgog6a9BMWpZC3lmOzl3iciMK/zcDGaE6MRYeQIDAQABAoIBAQCoL5rDqy782bbr\n' +
+    'J079UwAiJs9cbyAJwQE76mkBZA2rc37vHsKlqfrxpmqpq27buviMigEgMqvH6tx9\n' +
+    'ndYX0wyJXPLc3Pi/Z9Br1jb9rswaoPs1mwUWw8Y+QhLaN82hypTov3CnhBdRjOmf\n' +
+    '0zCKuuKtrU1y6TTUbAtVrcAa362Eba70/TeDAORYUz8sYpTzjX30kEd8ybbrGkWN\n' +
+    '449PK5Rx2/9YHdyuHIIowa2tCdAGmM1umhrHdwptgPjBwkSOPGfMnMe9orcgmFPa\n' +
+    'BqlbFTJ0rIdAGsyC3IJb2Q2/GUVxHtU2tNga0SJwvOgjfEhWc0DLi2QgWm0i4Mpo\n' +
+    'POQ9emLFAoGBAN4w6LIvOOfBmnOijJ5N1MPQpQ54v2haQ5iQlThq3+8LtksNPxTs\n' +
+    'phebdu61S/6RilbkR+vtTYLa8+x+/vkOT7IDzWALWJIIeTjy3FuQ/s3s5kaqR/fr\n' +
+    'qqWZdcT6db88RDBpTc2LjmWyg/IPoI1VdwWa8ThOr0JEi70dcfwFP8LXAoGBANrh\n' +
+    'ErkziBcGfRclraooT9UeyO4MwsyI/HNS83MIWgOLGeAAsBTmJWj3ue/4vWUEwuW2\n' +
+    '+QSCAFD9Kc7Qj/Zk4JcKJfoznN+qHKlsqxNN9sWMUzTgoZ+Jvef9q++1glGHghDa\n' +
+    'rQp3K3Rme+lhb84ttsX9BXYG7BDhJ6Jrz2mt/aUvAoGAd366RsoawplepX3wPlsB\n' +
+    'aGZXvpa16jtRS0XG2tavpHIaEfcHzAsRsHSN3Ado3XoMenq/K2UuYIe8053hJrTJ\n' +
+    'q6Vb2KGBethPyY7jb+NlBf64QZzmo7D8z57etZc1qCmTSq33h+ncJVmCmLZK1Hf4\n' +
+    'UO1peaznmK4gsQ6a9L0l83UCgYB1Pw+qiYIi42Tqm1JVzdZF0YHMkqVerxqcJBko\n' +
+    'y5Z8Q20O4w9vgoETo2/Erje1/0DvkH3//itxNsvIb0xOrmboQZVqW29zGErWLtHN\n' +
+    'O3wvAiYoMxQgw8YomWgatd4jEjWIFbuP2Zo7dhJ2R61+glpf4FOmj7qwqAt1I88t\n' +
+    'SviOHQKBgQCgPNz2GjwHPJFSg82JEYR2OiJ5YdxM+/dL3g4thmW77nYwHfkmuj6K\n' +
+    'GXj/O1tZimzpG7w6Zxm4aBgKHgZtfjEn+c9kJ+SIZ5/n5iy+X55R5R1wSvX7kk1t\n' +
+    'jsUGrOAr2kJFuUdbayio26MvPCAQMFdwXTp4NVabg3CgSIE+eYY9rA==\n' +
     '-----END RSA PRIVATE KEY-----'
 };
 
@@ -409,7 +523,7 @@ mock.ldDocuments['did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1'] = {
   "publicKeyPem": keys.delta.publicKey
 };
 
-// epsilon
+// epsilon has 2 public keys
 mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'] = {
   "@context": "https://w3id.org/identity/v1",
   "id": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
@@ -417,7 +531,12 @@ mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'] = {
     "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
     "type": "CryptographicKey",
     "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-    "publicKeyPem": keys.epsilon.publicKey
+    "publicKeyPem": keys.epsilon_1.publicKey
+  }, {
+    "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
+    "type": "CryptographicKey",
+    "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
+    "publicKeyPem": keys.epsilon_2.publicKey
   }]
 };
 mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1'] = {
@@ -426,7 +545,15 @@ mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1'] = {
   "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
   "label": "Signing Key 1",
   "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
-  "publicKeyPem": keys.epsilon.publicKey
+  "publicKeyPem": keys.epsilon_1.publicKey
+};
+mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'] = {
+  "@context": "https://w3id.org/identity/v1",
+  "type": "CryptographicKey",
+  "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
+  "label": "Signing Key 2",
+  "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
+  "publicKeyPem": keys.epsilon_2.publicKey
 };
 
 const bedrock = require('bedrock');

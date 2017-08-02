@@ -15,7 +15,7 @@ const mockData = require('./mock.data');
 
 describe('validateEvent API', () => {
   describe('WebLedgerEvent', () => {
-    it('validates a propery signed event', done => {
+    it('validates a properly signed event', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -212,7 +212,7 @@ describe('validateEvent API', () => {
   }); // end WebLedgerEvent
 
   describe('WebLedgerConfigurationEvent', () => {
-    it('validates a propery signed event', done => {
+    it('validates a properly signed event', done => {
       async.auto({
         signEvent: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
@@ -223,6 +223,40 @@ describe('validateEvent API', () => {
           brValidator.validateEvent(
             results.signEvent,
             mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            err => {
+              should.not.exist(err);
+              callback();
+            })
+        ]
+      }, done);
+    });
+
+    // epsilon has two valid key pairs
+    it('signer with multiple keys may sign using any owned key', done => {
+      async.auto({
+        signEvent: callback => signDocument({
+          creator: mockData.authorizedSigners.epsilon_1,
+          privateKeyPem: mockData.keys.epsilon_1.privateKey,
+          doc: mockData.ledgers.delta.config
+        }, callback),
+        check: ['signEvent', (results, callback) =>
+          brValidator.validateEvent(
+            results.signEvent,
+            mockData.ledgers.delta.config.input[0].eventValidator[1],
+            err => {
+              should.not.exist(err);
+              callback();
+            })
+        ],
+        signEvent2: ['check', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.epsilon_2,
+          privateKeyPem: mockData.keys.epsilon_2.privateKey,
+          doc: mockData.ledgers.delta.config
+        }, callback)],
+        check2: ['signEvent2', (results, callback) =>
+          brValidator.validateEvent(
+            results.signEvent2,
+            mockData.ledgers.delta.config.input[0].eventValidator[1],
             err => {
               should.not.exist(err);
               callback();
@@ -291,8 +325,8 @@ describe('validateEvent API', () => {
           doc: results.signEventOne
         }, callback)],
         signEventThree: ['signEventTwo', (results, callback) => signDocument({
-          creator: mockData.authorizedSigners.epsilon,
-          privateKeyPem: mockData.keys.epsilon.privateKey,
+          creator: mockData.authorizedSigners.epsilon_2,
+          privateKeyPem: mockData.keys.epsilon_2.privateKey,
           doc: results.signEventTwo
         }, callback)],
         check: ['signEventThree', (results, callback) =>
@@ -330,6 +364,42 @@ describe('validateEvent API', () => {
               details.verifiedSignatures.should.equal(1);
               details.minimumSignaturesRequired.should.equal(2);
               details.keyResults.should.be.an('array');
+              callback();
+            })
+        ]
+      }, done));
+
+    it('does not validate event signed twice by owner w/multiple keys', done =>
+      async.auto({
+        signEventOne: callback => signDocument({
+          creator: mockData.authorizedSigners.epsilon_1,
+          privateKeyPem: mockData.keys.epsilon_1.privateKey,
+          doc: mockData.ledgers.epsilon.config
+        }, callback),
+        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.epsilon_2,
+          privateKeyPem: mockData.keys.epsilon_2.privateKey,
+          doc: results.signEventOne
+        }, callback)],
+        check: ['signEventTwo', (results, callback) =>
+          brValidator.validateEvent(results.signEventTwo,
+            mockData.ledgers.epsilon.config.input[0].eventValidator[1],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.event.should.be.an('object');
+              details.trustedSigners.should.be.an('object');
+              details.signatureCount.should.equal(2);
+              details.verifiedSignatures.should.equal(1);
+              details.minimumSignaturesRequired.should.equal(2);
+              details.keyResults.should.be.an('array');
+              const keyResults = details.keyResults;
+              // shows that both the signatures provided by epsilon are valid
+              keyResults.filter(k => k.verified).map(k => k.publicKey)
+                .should.have.same.members([
+                  mockData.authorizedSigners.epsilon_1,
+                  mockData.authorizedSigners.epsilon_2
+                ]);
               callback();
             })
         ]
