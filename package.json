@@ -12,12 +12,12 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature#readme",
   "dependencies": {
-    "did-io": "digitalbazaar/did-io#master",
+    "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature"
   },
   "peerDependencies": {
     "bedrock": "digitalbazaar/bedrock#jsonld-1.1",
-    "bedrock-did-client": "^1.1.0",
+    "bedrock-did-client": "digitalbazaar/bedrock-did-client#jsonld-1.1",
     "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#cm4",
     "bedrock-validation": "^2.2.1"
   }
