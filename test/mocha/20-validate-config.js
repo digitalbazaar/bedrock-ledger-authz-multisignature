@@ -12,7 +12,8 @@ const mockData = require('./mock.data');
 
 describe('validateConfiguration API', () => {
   it('validates a proper config', done => {
-    const testConfig = mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
+    const testConfig =
+      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
     brValidator.validateConfiguration(testConfig, err => {
       should.not.exist(err);
       done();
