@@ -23,8 +23,7 @@ ledgers.alpha = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
     type: 'WebLedgerConfigurationEvent',
-    operation: 'Config',
-    input: [{
+    ledgerConfiguration: {
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
       consensusMethod: 'UnilateralConsensus2017',
@@ -49,15 +48,14 @@ ledgers.alpha = {
         ],
         minimumSignaturesRequired: 1
       }]
-    }]
+    }
   }
 };
 ledgers.beta = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
     type: 'WebLedgerConfigurationEvent',
-    operation: 'Config',
-    input: [{
+    ledgerConfiguration: {
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
       consensusMethod: 'UnilateralConsensus2017',
@@ -84,7 +82,7 @@ ledgers.beta = {
         ],
         minimumSignaturesRequired: 2
       }]
-    }]
+    }
   }
 };
 
@@ -94,8 +92,7 @@ ledgers.gamma = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
     type: 'WebLedgerConfigurationEvent',
-    operation: 'Config',
-    input: [{
+    ledgerConfiguration: {
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
       consensusMethod: 'UnilateralConsensus2017',
@@ -123,7 +120,7 @@ ledgers.gamma = {
         ],
         minimumSignaturesRequired: 3
       }]
-    }]
+    }
   }
 };
 
@@ -133,8 +130,7 @@ ledgers.delta = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
     type: 'WebLedgerConfigurationEvent',
-    operation: 'Config',
-    input: [{
+    ledgerConfiguration: {
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
       consensusMethod: 'UnilateralConsensus2017',
@@ -159,7 +155,7 @@ ledgers.delta = {
         ],
         minimumSignaturesRequired: 1
       }]
-    }]
+    }
   }
 };
 
@@ -169,8 +165,7 @@ ledgers.epsilon = {
   config: {
     '@context': 'https://w3id.org/webledger/v1',
     type: 'WebLedgerConfigurationEvent',
-    operation: 'Config',
-    input: [{
+    ledgerConfiguration: {
       type: 'WebLedgerConfiguration',
       ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
       consensusMethod: 'UnilateralConsensus2017',
@@ -197,7 +192,7 @@ ledgers.epsilon = {
         ],
         minimumSignaturesRequired: 2
       }]
-    }]
+    }
   }
 };
 

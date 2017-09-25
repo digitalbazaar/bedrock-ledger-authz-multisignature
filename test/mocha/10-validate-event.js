@@ -23,9 +23,9 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[0],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ]
@@ -45,9 +45,9 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) => {
         brValidator.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.beta.config.input[0].eventValidator[0],
+          mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
           err => {
-            should.not.exist(err);
+            assertNoError(err);
             callback();
           });
       }]
@@ -67,9 +67,9 @@ describe('validateEvent API', () => {
         check: ['signEventTwo', (results, callback) => {
           brValidator.validateEvent(
             results.signEventTwo,
-            mockData.ledgers.gamma.config.input[0].eventValidator[0],
+            mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[0],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             });
         }]
@@ -89,7 +89,7 @@ describe('validateEvent API', () => {
         check: ['signEventTwo', (results, callback) => {
           brValidator.validateEvent(
             results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].eventValidator[0],
+            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -124,9 +124,9 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) => {
           brValidator.validateEvent(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].eventValidator[0],
+            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             });
         }]
@@ -142,7 +142,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[0],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -170,7 +170,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[0],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -194,7 +194,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[0],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -220,9 +220,9 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ]
@@ -240,9 +240,9 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.delta.config.input[0].eventValidator[1],
+            mockData.ledgers.delta.config.ledgerConfiguration.eventValidator[1],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ],
@@ -254,9 +254,9 @@ describe('validateEvent API', () => {
         check2: ['signEvent2', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent2,
-            mockData.ledgers.delta.config.input[0].eventValidator[1],
+            mockData.ledgers.delta.config.ledgerConfiguration.eventValidator[1],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ]
@@ -277,9 +277,9 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) =>
         brValidator.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.beta.config.input[0].eventValidator[1],
+          mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
           err => {
-            should.not.exist(err);
+            assertNoError(err);
             callback();
           })
       ]
@@ -299,7 +299,7 @@ describe('validateEvent API', () => {
       check: ['signEventTwo', (results, callback) =>
         brValidator.validateEvent(
           results.signEventTwo,
-          mockData.ledgers.gamma.config.input[0].eventValidator[1],
+          mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[1],
           err => {
             should.exist(err);
             const details = err.details;
@@ -330,9 +330,9 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) =>
           brValidator.validateEvent(
             results.signEventThree,
-            mockData.ledgers.gamma.config.input[0].eventValidator[1],
+            mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[1],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ]
@@ -352,7 +352,7 @@ describe('validateEvent API', () => {
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
           brValidator.validateEvent(results.signEventTwo,
-            mockData.ledgers.beta.config.input[0].eventValidator[1],
+            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
             err => {
               should.exist(err);
               const details = err.details;
@@ -380,8 +380,10 @@ describe('validateEvent API', () => {
           doc: results.signEventOne
         }, callback)],
         check: ['signEventTwo', (results, callback) =>
-          brValidator.validateEvent(results.signEventTwo,
-            mockData.ledgers.epsilon.config.input[0].eventValidator[1],
+          brValidator.validateEvent(
+            results.signEventTwo,
+            mockData.ledgers.epsilon.config.ledgerConfiguration
+              .eventValidator[1],
             err => {
               should.exist(err);
               const details = err.details;
@@ -423,9 +425,9 @@ describe('validateEvent API', () => {
         check: ['signEventThree', (results, callback) =>
           brValidator.validateEvent(
             results.signEventThree,
-            mockData.ledgers.beta.config.input[0].eventValidator[1],
+            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
             err => {
-              should.not.exist(err);
+              assertNoError(err);
               callback();
             })
         ]
@@ -441,7 +443,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
             err => {
               should.exist(err);
               const details = err.details;
@@ -468,7 +470,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
             err => {
               should.exist(err);
               const details = err.details;
@@ -492,7 +494,7 @@ describe('validateEvent API', () => {
         check: ['signEvent', (results, callback) =>
           brValidator.validateEvent(
             results.signEvent,
-            mockData.ledgers.alpha.config.input[0].eventValidator[1],
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
             err => {
               should.exist(err);
               const details = err.details;

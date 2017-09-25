@@ -12,7 +12,7 @@ const mockData = require('./mock.data');
 
 describe('validateConfiguration API', () => {
   it('validates a proper config', done => {
-    const testConfig = mockData.ledgers.alpha.config.input[0].eventValidator[0];
+    const testConfig = mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
     brValidator.validateConfiguration(testConfig, err => {
       should.not.exist(err);
       done();
@@ -20,7 +20,7 @@ describe('validateConfiguration API', () => {
   });
   it('returns ValidationError on missing approvedSigner', done => {
     const testConfig = bedrock.util.clone(
-      mockData.ledgers.alpha.config.input[0].eventValidator[0]);
+      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0]);
     delete testConfig.approvedSigner;
     brValidator.validateConfiguration(testConfig, err => {
       should.exist(err);
@@ -30,7 +30,7 @@ describe('validateConfiguration API', () => {
   });
   it('returns ValidationError on missing minimumSignaturesRequired', done => {
     const testConfig = bedrock.util.clone(
-      mockData.ledgers.alpha.config.input[0].eventValidator[0]);
+      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0]);
     delete testConfig.minimumSignaturesRequired;
     brValidator.validateConfiguration(testConfig, err => {
       should.exist(err);
