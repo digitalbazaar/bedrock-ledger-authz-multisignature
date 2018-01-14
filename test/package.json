@@ -14,7 +14,7 @@
     "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#cm4",
     "bedrock-ledger-context": "digitalbazaar/bedrock-ledger-context#master",
     "bedrock-ledger-validator-signature": "file:..",
-    "bedrock-mongodb": "^3.2.3",
+    "bedrock-mongodb": "^4.0.0",
     "bedrock-permission": "^2.4.3",
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^2.2.1",
