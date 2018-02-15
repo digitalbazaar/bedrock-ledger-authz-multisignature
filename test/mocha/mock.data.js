@@ -205,28 +205,37 @@ ledgers.epsilon = {
 events.alpha = {
   '@context': 'https://w3id.org/webledger/v1',
   type: 'WebLedgerEvent',
-  operation: 'Create',
-  input: [{
-    '@context': 'https://schema.org/',
-    value: 'a2035188-372a-4afb-9cf2-7d99baebae88'
+  operation: [{
+    '@context': 'https://w3id.org/webledger/v1',
+    type: 'CreateWebLedgerRecord',
+    record: {
+      '@context': 'https://schema.org/',
+      value: 'a2035188-372a-4afb-9cf2-7d99baebae88'
+    }
   }]
 };
 events.beta = {
   '@context': 'https://w3id.org/webledger/v1',
   type: 'WebLedgerEvent',
-  operation: 'Create',
-  input: [{
-    '@context': 'https://schema.org/',
-    value: '456866ac-dc86-4a62-81ab-6c15554d985c'
+  operation: [{
+    '@context': 'https://w3id.org/webledger/v1',
+    type: 'CreateWebLedgerRecord',
+    record: {
+      '@context': 'https://schema.org/',
+      value: '456866ac-dc86-4a62-81ab-6c15554d985c'
+    }
   }]
 };
 events.gamma = {
   '@context': 'https://w3id.org/webledger/v1',
   type: 'WebLedgerEvent',
-  operation: 'Create',
-  input: [{
-    '@context': 'https://schema.org/',
-    value: '8bbb6850-4afc-40d0-b8ff-d776844196bd'
+  operation: [{
+    '@context': 'https://w3id.org/webledger/v1',
+    type: 'CreateWebLedgerRecord',
+    record: {
+      '@context': 'https://schema.org/',
+      value: '8bbb6850-4afc-40d0-b8ff-d776844196bd'
+    }
   }]
 };
 

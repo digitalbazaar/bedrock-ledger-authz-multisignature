@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const _ = require('lodash');
 const bedrock = require('bedrock');
 const async = require('async');
 const brValidator = require('bedrock-ledger-validator-signature');
@@ -509,14 +510,37 @@ describe('validateEvent API', () => {
 });
 
 function signDocument(options, callback) {
-  jsigs.sign(options.doc, {
-    algorithm: 'LinkedDataSignature2015',
-    privateKeyPem: options.privateKeyPem,
-    creator: options.creator
-  }, (err, result) => {
-    if(err) {
-      return callback(err);
-    }
-    callback(null, result);
-  });
+  // sign all operations for WebLedgerEvents
+  if(options.doc.type === 'WebLedgerEvent') {
+    const signedOperations = _.cloneDeep(options.doc);
+    signedOperations.operation = [];
+
+    async.every(options.doc.operation, (unsignedObject, callback) => {
+      jsigs.sign(unsignedObject, {
+        algorithm: 'LinkedDataSignature2015',
+        privateKeyPem: options.privateKeyPem,
+        creator: options.creator
+      }, (err, result) => {
+        if(err) {
+          return callback(err);
+        }
+        signedOperations.operation.push(result);
+        callback(null, true);
+      });
+    }, err => {
+      callback(err, signedOperations);
+    });
+  } else {
+    // everything else
+    jsigs.sign(options.doc, {
+      algorithm: 'LinkedDataSignature2015',
+      privateKeyPem: options.privateKeyPem,
+      creator: options.creator
+    }, (err, result) => {
+      if(err) {
+        return callback(err);
+      }
+      callback(null, result);
+    });
+  }
 }
