@@ -150,8 +150,8 @@ describe('validateEvent API', () => {
               details.keyResults[0].verified.should.be.false;
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
-              details.keyResults[0].error.should.contain(
-                'URL could not be dereferenced');
+              details.keyResults[0].error.name.should.contain(
+                'jsonld.InvalidUrl');
               callback();
             })
         ]
@@ -198,8 +198,7 @@ describe('validateEvent API', () => {
             err => {
               should.exist(err);
               const details = err.details;
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].error.should.contain('not trusted');
+              details.verifiedSignatures.should.equal(0);
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.beta);
               callback();
@@ -451,8 +450,8 @@ describe('validateEvent API', () => {
               details.keyResults[0].verified.should.be.false;
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
-              details.keyResults[0].error.should.contain(
-                'URL could not be dereferenced');
+              details.keyResults[0].error.name.should.contain(
+                'jsonld.InvalidUrl');
               callback();
             })
         ]
@@ -498,8 +497,7 @@ describe('validateEvent API', () => {
             err => {
               should.exist(err);
               const details = err.details;
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].error.should.contain('not trusted');
+              details.verifiedSignatures.should.equal(0);
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.beta);
               callback();
