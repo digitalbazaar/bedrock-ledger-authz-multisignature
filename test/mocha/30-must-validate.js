@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
 const brValidator = require('bedrock-ledger-validator-signature');
 const mockData = require('./mock.data');
 
-describe('mustValidateEvent API', () => {
-  describe('WebLedgerConfigurationEvent validator', () => {
-    it('should return true on a WebLedgerConfigurationEvent event', done => {
-      const event = mockData.ledgers.alpha.config;
+describe('mustValidate API', () => {
+  describe('ledgerConfigurationValidator', () => {
+    it('should return true on a WebLedgerConfiguration', done => {
+      const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1];
-      brValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
+      brValidator.mustValidate(ledgerConfiguration, testConfig, (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -20,11 +20,11 @@ describe('mustValidateEvent API', () => {
         done();
       });
     });
-    it('should return false on a WebLedgerEvent event', done => {
-      const event = mockData.events.alpha;
+    it('should return false on an operation', done => {
+      const operation = mockData.operations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1];
-      brValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
+      brValidator.mustValidate(operation, testConfig, (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -33,12 +33,12 @@ describe('mustValidateEvent API', () => {
       });
     });
   });
-  describe('WebLedgerEvent validator', () => {
-    it('should return true on a WebLedgerEvent event', done => {
-      const event = mockData.events.alpha;
+  describe('operationValidator', () => {
+    it('should return true on an operation', done => {
+      const operation = mockData.operations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
-      brValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.operationValidator[0];
+      brValidator.mustValidate(operation, testConfig, (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -46,11 +46,12 @@ describe('mustValidateEvent API', () => {
         done();
       });
     });
-    it('should return false on a WebLedgerConfigurationEvent event', done => {
-      const event = mockData.ledgers.alpha.config;
+    it('should return false on a WebLedgerConfiguration', done => {
+      const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
-      brValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.operationValidator[0];
+      brValidator.mustValidate(
+        ledgerConfiguration, testConfig, (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');

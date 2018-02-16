@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -11,9 +11,9 @@ jsigs.use('jsonld', bedrock.jsonld);
 const mockData = require('./mock.data');
 
 describe('validateConfiguration API', () => {
-  it('validates a proper config', done => {
+  it('validates a proper validator config', done => {
     const testConfig =
-      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
+      mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
     brValidator.validateConfiguration(testConfig, err => {
       should.not.exist(err);
       done();
@@ -21,7 +21,7 @@ describe('validateConfiguration API', () => {
   });
   it('returns ValidationError on missing approvedSigner', done => {
     const testConfig = bedrock.util.clone(
-      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0]);
+      mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.approvedSigner;
     brValidator.validateConfiguration(testConfig, err => {
       should.exist(err);
@@ -31,7 +31,7 @@ describe('validateConfiguration API', () => {
   });
   it('returns ValidationError on missing minimumSignaturesRequired', done => {
     const testConfig = bedrock.util.clone(
-      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0]);
+      mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.minimumSignaturesRequired;
     brValidator.validateConfiguration(testConfig, err => {
       should.exist(err);

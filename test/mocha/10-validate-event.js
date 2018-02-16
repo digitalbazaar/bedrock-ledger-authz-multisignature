@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
-const _ = require('lodash');
 const bedrock = require('bedrock');
 const async = require('async');
 const brValidator = require('bedrock-ledger-validator-signature');
@@ -12,19 +11,19 @@ jsigs.use('jsonld', bedrock.jsonld);
 
 const mockData = require('./mock.data');
 
-describe('validateEvent API', () => {
-  describe('WebLedgerEvent', () => {
-    it('validates a properly signed event', done => {
+describe('validate API', () => {
+  describe('operationValidator', () => {
+    it('validates a properly signed operation', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.events.alpha
+          doc: mockData.operations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.operationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -32,69 +31,70 @@ describe('validateEvent API', () => {
         ]
       }, done);
     });
-    it('validates an event that requires two signatures', done => async.auto({
-      signEventOne: callback => signDocument({
-        creator: mockData.authorizedSigners.alpha,
-        privateKeyPem: mockData.keys.alpha.privateKey,
-        doc: mockData.events.beta
-      }, callback),
-      signEventTwo: ['signEventOne', (results, callback) => signDocument({
-        creator: mockData.authorizedSigners.beta,
-        privateKeyPem: mockData.keys.beta.privateKey,
-        doc: results.signEventOne
-      }, callback)],
-      check: ['signEventTwo', (results, callback) => {
-        brValidator.validateEvent(
-          results.signEventTwo,
-          mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
-          err => {
-            assertNoError(err);
-            callback();
-          });
-      }]
-    }, done));
-    it('validates an event when approvedSigners specifies a publicKey', done =>
+    it('validates an operation that requires two signatures', done =>
       async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.events.gamma
+          doc: mockData.operations.beta
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        check: ['signEventTwo', (results, callback) => {
-          brValidator.validateEvent(
-            results.signEventTwo,
-            mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[0],
+        check: ['signTwo', (results, callback) => {
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.beta.operationValidator[0],
             err => {
               assertNoError(err);
               callback();
             });
         }]
       }, done));
-    it('does not validate event signed twice by same owner', done =>
+    it('validates an operation when approvedSigners specifies a publicKey', done =>
       async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.events.beta
+          doc: mockData.operations.gamma
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.beta,
+          privateKeyPem: mockData.keys.beta.privateKey,
+          doc: results.signOne
+        }, callback)],
+        check: ['signTwo', (results, callback) => {
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.gamma.operationValidator[0],
+            err => {
+              assertNoError(err);
+              callback();
+            });
+        }]
+      }, done));
+    it('does not validate operation signed twice by same owner', done =>
+      async.auto({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: results.signEventOne
+          doc: mockData.operations.beta
+        }, callback),
+        signTwo: ['signOne', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: results.signOne
         }, callback)],
-        check: ['signEventTwo', (results, callback) => {
-          brValidator.validateEvent(
-            results.signEventTwo,
-            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
+        check: ['signTwo', (results, callback) => {
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.beta.operationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
-              details.event.should.be.an('object');
+              details.input.should.be.an('object');
               details.trustedSigners.should.be.an('object');
               details.signatureCount.should.equal(2);
               details.verifiedSignatures.should.equal(1);
@@ -105,27 +105,27 @@ describe('validateEvent API', () => {
         }]
       }, done));
 
-    it('validates an event with two valid signatures and one invalid',
+    it('validates an operation with two valid signatures and one invalid',
       done => async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.events.beta
+          doc: mockData.operations.beta
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        signEventThree: ['signEventTwo', (results, callback) => signDocument({
+        signThree: ['signTwo', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.gamma,
           privateKeyPem: mockData.keys.gamma.privateKey,
-          doc: results.signEventTwo
+          doc: results.signTwo
         }, callback)],
-        check: ['signEventThree', (results, callback) => {
-          brValidator.validateEvent(
-            results.signEventThree,
-            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[0],
+        check: ['signThree', (results, callback) => {
+          brValidator.validate(
+            results.signThree,
+            mockData.ledgerConfigurations.beta.operationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -135,15 +135,15 @@ describe('validateEvent API', () => {
 
     it('does not validate if the public key cannot be validated', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.gamma,
           privateKeyPem: mockData.keys.gamma.privateKey,
-          doc: mockData.events.alpha
+          doc: mockData.operations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.operationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -152,26 +152,26 @@ describe('validateEvent API', () => {
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
               details.keyResults[0].error.name.should.contain(
-                'jsonld.InvalidUrl');
+                'jsonld.LoadDocumentError');
               callback();
             })
         ]
       }, done);
     });
 
-    // the public key id does not match the private key used to sign the event
+    // the public key id does not match the private key used to sign
     it('returns `ValidationError` if the signature is not valid', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           // using wrong private key
           privateKeyPem: mockData.keys.delta.privateKey,
-          doc: mockData.events.alpha
+          doc: mockData.operations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.operationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -184,18 +184,18 @@ describe('validateEvent API', () => {
       }, done);
     });
 
-    // this event is signed by an owner that is not in `approvedSigner`
+    // this operation is signed by an owner that is not in `approvedSigner`
     it('does not validate when owner is not an approved signer', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: mockData.events.alpha
+          doc: mockData.operations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.operationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -207,20 +207,21 @@ describe('validateEvent API', () => {
         ]
       }, done);
     });
-  }); // end WebLedgerEvent
+  }); // end operationValidator
 
-  describe('WebLedgerConfigurationEvent', () => {
-    it('validates a properly signed event', done => {
+  describe('ledgerConfigurationValidator', () => {
+    it('validates a properly signed ledgerConfiguration', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.ledgers.alpha.config
+          doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha
+              .ledgerConfigurationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -228,33 +229,33 @@ describe('validateEvent API', () => {
         ]
       }, done);
     });
-
     // epsilon has two valid key pairs
     it('signer with multiple keys may sign using any owned key', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.epsilon_1,
           privateKeyPem: mockData.keys.epsilon_1.privateKey,
-          doc: mockData.ledgers.delta.config
+          doc: mockData.ledgerConfigurations.delta
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.delta.config.ledgerConfiguration.eventValidator[1],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.delta
+              .ledgerConfigurationValidator[0],
             err => {
               assertNoError(err);
               callback();
             })
         ],
-        signEvent2: ['check', (results, callback) => signDocument({
+        sign2: ['check', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.epsilon_2,
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
-          doc: mockData.ledgers.delta.config
+          doc: mockData.ledgerConfigurations.delta
         }, callback)],
-        check2: ['signEvent2', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent2,
-            mockData.ledgers.delta.config.ledgerConfiguration.eventValidator[1],
+        check2: ['sign2', (results, callback) =>
+          brValidator.validate(
+            results.sign2,
+            mockData.ledgerConfigurations.delta.ledgerConfigurationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -263,74 +264,76 @@ describe('validateEvent API', () => {
       }, done);
     });
 
-    it('validates an event that requires two signatures', done => async.auto({
-      signEventOne: callback => signDocument({
-        creator: mockData.authorizedSigners.alpha,
-        privateKeyPem: mockData.keys.alpha.privateKey,
-        doc: mockData.ledgers.beta.config
-      }, callback),
-      signEventTwo: ['signEventOne', (results, callback) => signDocument({
-        creator: mockData.authorizedSigners.beta,
-        privateKeyPem: mockData.keys.beta.privateKey,
-        doc: results.signEventOne
-      }, callback)],
-      check: ['signEventTwo', (results, callback) =>
-        brValidator.validateEvent(
-          results.signEventTwo,
-          mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
-          err => {
-            assertNoError(err);
-            callback();
-          })
-      ]
-    }, done));
-
-    it('does not validate an event with 2/3 signatures', done => async.auto({
-      signEventOne: callback => signDocument({
-        creator: mockData.authorizedSigners.alpha,
-        privateKeyPem: mockData.keys.alpha.privateKey,
-        doc: mockData.ledgers.gamma.config
-      }, callback),
-      signEventTwo: ['signEventOne', (results, callback) => signDocument({
-        creator: mockData.authorizedSigners.beta,
-        privateKeyPem: mockData.keys.beta.privateKey,
-        doc: results.signEventOne
-      }, callback)],
-      check: ['signEventTwo', (results, callback) =>
-        brValidator.validateEvent(
-          results.signEventTwo,
-          mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[1],
-          err => {
-            should.exist(err);
-            const details = err.details;
-            details.signatureCount.should.equal(2);
-            details.minimumSignaturesRequired.should.equal(3);
-            callback();
-          })
-      ]
-    }, done));
-
-    it('validates an event with 3 of 3 signatures', done =>
+    it('validates a ledgerConfiguration that requires two signatures', done =>
       async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.ledgers.gamma.config
+          doc: mockData.ledgerConfigurations.beta
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        signEventThree: ['signEventTwo', (results, callback) => signDocument({
+        check: ['signTwo', (results, callback) => {
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
+            err => {
+              assertNoError(err);
+              callback();
+            });
+        }]
+      }, done));
+
+    it('does not validate a ledgerConfiguration with 2/3 signatures', done =>
+      async.auto({
+        signOne: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.ledgerConfigurations.gamma
+        }, callback),
+        signTwo: ['signOne', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.beta,
+          privateKeyPem: mockData.keys.beta.privateKey,
+          doc: results.signOne
+        }, callback)],
+        check: ['signTwo', (results, callback) =>
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.gamma.ledgerConfigurationValidator[0],
+            err => {
+              should.exist(err);
+              const details = err.details;
+              details.signatureCount.should.equal(2);
+              details.minimumSignaturesRequired.should.equal(3);
+              callback();
+            })
+        ]
+      }, done));
+
+    it('validates a ledgerConfiguration with 3 of 3 signatures', done =>
+      async.auto({
+        signOne: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.ledgerConfigurations.gamma
+        }, callback),
+        signTwo: ['signOne', (results, callback) => signDocument({
+          creator: mockData.authorizedSigners.beta,
+          privateKeyPem: mockData.keys.beta.privateKey,
+          doc: results.signOne
+        }, callback)],
+        signThree: ['signTwo', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.epsilon_2,
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
-          doc: results.signEventTwo
+          doc: results.signTwo
         }, callback)],
-        check: ['signEventThree', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEventThree,
-            mockData.ledgers.gamma.config.ledgerConfiguration.eventValidator[1],
+        check: ['signThree', (results, callback) =>
+          brValidator.validate(
+            results.signThree,
+            mockData.ledgerConfigurations.gamma.ledgerConfigurationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -338,25 +341,25 @@ describe('validateEvent API', () => {
         ]
       }, done));
 
-    it('does not validate event signed twice by same owner', done =>
-      async.auto({
-        signEventOne: callback => signDocument({
+    it('does not validate ledgerConfiguration signed twice by same owner',
+      done => async.auto({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.ledgers.beta.config
+          doc: mockData.ledgerConfigurations.beta
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        check: ['signEventTwo', (results, callback) =>
-          brValidator.validateEvent(results.signEventTwo,
-            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
+        check: ['signTwo', (results, callback) =>
+          brValidator.validate(results.signTwo,
+            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
-              details.event.should.be.an('object');
+              details.input.should.be.an('object');
               details.trustedSigners.should.be.an('object');
               details.signatureCount.should.equal(2);
               details.verifiedSignatures.should.equal(1);
@@ -367,27 +370,28 @@ describe('validateEvent API', () => {
         ]
       }, done));
 
-    it('does not validate event signed twice by owner w/multiple keys', done =>
+    it('does not validate ledgerConfiguration signed twice by owner ' +
+      'w/multiple keys', done =>
       async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.epsilon_1,
           privateKeyPem: mockData.keys.epsilon_1.privateKey,
-          doc: mockData.ledgers.epsilon.config
+          doc: mockData.ledgerConfigurations.epsilon
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.epsilon_2,
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        check: ['signEventTwo', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEventTwo,
-            mockData.ledgers.epsilon.config.ledgerConfiguration
-              .eventValidator[1],
+        check: ['signTwo', (results, callback) =>
+          brValidator.validate(
+            results.signTwo,
+            mockData.ledgerConfigurations.epsilon
+              .ledgerConfigurationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
-              details.event.should.be.an('object');
+              details.input.should.be.an('object');
               details.trustedSigners.should.be.an('object');
               details.signatureCount.should.equal(2);
               details.verifiedSignatures.should.equal(1);
@@ -405,27 +409,28 @@ describe('validateEvent API', () => {
         ]
       }, done));
 
-    it('validates an event with two valid signatures and one invalid',
+    it('validates a ledgerConfiguration with two valid signatures and ' +
+      'one invalid',
       done => async.auto({
-        signEventOne: callback => signDocument({
+        signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.ledgers.beta.config
+          doc: mockData.ledgerConfigurations.beta
         }, callback),
-        signEventTwo: ['signEventOne', (results, callback) => signDocument({
+        signTwo: ['signOne', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: results.signEventOne
+          doc: results.signOne
         }, callback)],
-        signEventThree: ['signEventTwo', (results, callback) => signDocument({
+        signThree: ['signTwo', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.gamma,
           privateKeyPem: mockData.keys.gamma.privateKey,
-          doc: results.signEventTwo
+          doc: results.signTwo
         }, callback)],
-        check: ['signEventThree', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEventThree,
-            mockData.ledgers.beta.config.ledgerConfiguration.eventValidator[1],
+        check: ['signThree', (results, callback) =>
+          brValidator.validate(
+            results.signThree,
+            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
             err => {
               assertNoError(err);
               callback();
@@ -435,15 +440,15 @@ describe('validateEvent API', () => {
 
     it('does not validate if the public key cannot be validated', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.gamma,
           privateKeyPem: mockData.keys.gamma.privateKey,
-          doc: mockData.ledgers.alpha.config
+          doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -452,25 +457,25 @@ describe('validateEvent API', () => {
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
               details.keyResults[0].error.name.should.contain(
-                'jsonld.InvalidUrl');
+                'jsonld.LoadDocumentError');
               callback();
             })
         ]
       }, done);
     });
 
-    // the public key id does not match the private key used to sign the event
+    // the public key id does not match the private key used to sign
     it('returns `ValidationError` if the signature is not valid', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.delta.privateKey,
-          doc: mockData.ledgers.alpha.config
+          doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -483,18 +488,18 @@ describe('validateEvent API', () => {
       }, done);
     });
 
-    // this event is signed by an owner that is not in `approvedSigner`
+    // this config is signed by an owner that is not in `approvedSigner`
     it('does not validate when owner is not an approved signer', done => {
       async.auto({
-        signEvent: callback => signDocument({
+        sign: callback => signDocument({
           creator: mockData.authorizedSigners.beta,
           privateKeyPem: mockData.keys.beta.privateKey,
-          doc: mockData.ledgers.alpha.config
+          doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['signEvent', (results, callback) =>
-          brValidator.validateEvent(
-            results.signEvent,
-            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[1],
+        check: ['sign', (results, callback) =>
+          brValidator.validate(
+            results.sign,
+            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
             err => {
               should.exist(err);
               const details = err.details;
@@ -506,41 +511,18 @@ describe('validateEvent API', () => {
         ]
       }, done);
     });
-  }); // end WebLedgerConfigurationEvent
+  }); // end ledgerConfigurationValidator
 });
 
 function signDocument(options, callback) {
-  // sign all operations for WebLedgerEvents
-  if(options.doc.type === 'WebLedgerEvent') {
-    const signedOperations = _.cloneDeep(options.doc);
-    signedOperations.operation = [];
-
-    async.every(options.doc.operation, (unsignedObject, callback) => {
-      jsigs.sign(unsignedObject, {
-        algorithm: 'LinkedDataSignature2015',
-        privateKeyPem: options.privateKeyPem,
-        creator: options.creator
-      }, (err, result) => {
-        if(err) {
-          return callback(err);
-        }
-        signedOperations.operation.push(result);
-        callback(null, true);
-      });
-    }, err => {
-      callback(err, signedOperations);
-    });
-  } else {
-    // everything else
-    jsigs.sign(options.doc, {
-      algorithm: 'LinkedDataSignature2015',
-      privateKeyPem: options.privateKeyPem,
-      creator: options.creator
-    }, (err, result) => {
-      if(err) {
-        return callback(err);
-      }
-      callback(null, result);
-    });
-  }
+  jsigs.sign(options.doc, {
+    algorithm: 'RsaSignature2018',
+    privateKeyPem: options.privateKeyPem,
+    creator: options.creator
+  }, (err, result) => {
+    if(err) {
+      return callback(err);
+    }
+    callback(null, result);
+  });
 }

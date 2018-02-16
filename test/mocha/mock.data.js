@@ -7,8 +7,8 @@ const mock = {};
 
 module.exports = mock;
 
-const ledgers = mock.ledgers = {};
-const events = mock.events = {};
+const ledgerConfigurations = mock.ledgerConfigurations = {};
+const operations = mock.operations = {};
 const keys = mock.keys = {};
 
 mock.authorizedSigners = {
@@ -25,218 +25,187 @@ mock.authorizedSigners = {
   epsilon_2: 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'
 };
 
-ledgers.alpha = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-        ],
-        minimumSignaturesRequired: 1
-      }, {
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerConfigurationEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-        ],
-        minimumSignaturesRequired: 1
-      }]
-    }
-  }
+ledgerConfigurations.alpha = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+    ],
+    minimumSignaturesRequired: 1
+  }],
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+    ],
+    minimumSignaturesRequired: 1
+  }]
 };
-ledgers.beta = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-        ],
-        minimumSignaturesRequired: 2
-      }, {
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerConfigurationEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
-        ],
-        minimumSignaturesRequired: 2
-      }]
-    }
-  }
+
+ledgerConfigurations.beta = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:3b7cfe17-b493-45e8-906c-0f150d51b227',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
+    ],
+    minimumSignaturesRequired: 2
+  }],
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'
+    ],
+    minimumSignaturesRequired: 2
+  }]
 };
 
 // this ledger has approved signer that is a publicKey
 // configuration requires 3 signatures
-ledgers.gamma = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
-        ],
-        minimumSignaturesRequired: 2
-      }, {
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerConfigurationEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
-          'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
-          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'
-        ],
-        minimumSignaturesRequired: 3
-      }]
-    }
-  }
+ledgerConfigurations.gamma = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
+    ],
+    minimumSignaturesRequired: 2
+  }],
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838',
+      'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
+      'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'
+    ],
+    minimumSignaturesRequired: 3
+  }]
 };
 
 // this ledger has an approved signer (epsilon) that has two public keys
 // configuration requires 1 signatures
-ledgers.delta = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }],
-        approvedSigner: [
-          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
-        ],
-        minimumSignaturesRequired: 1
-      }, {
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerConfigurationEvent']
-        }],
-        approvedSigner: [
-          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
-        ],
-        minimumSignaturesRequired: 1
-      }]
-    }
-  }
+ledgerConfigurations.delta = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }],
+    approvedSigner: [
+      'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+    ],
+    minimumSignaturesRequired: 1
+  }],
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+    ],
+    minimumSignaturesRequired: 1
+  }]
 };
 
 // this ledger has an approved signer (epsilon) that has two public keys
 // configuration requires 2 signatures
-ledgers.epsilon = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
-          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
-        ],
-        minimumSignaturesRequired: 2
-      }, {
-        type: 'SignatureValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerConfigurationEvent']
-        }],
-        approvedSigner: [
-          'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
-          'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
-        ],
-        minimumSignaturesRequired: 2
-      }]
-    }
-  }
+ledgerConfigurations.epsilon = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:5ed5a201-26ba-445b-8101-44a9779768b2',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
+      'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+    ],
+    minimumSignaturesRequired: 2
+  }],
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838', // alpha
+      'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b' // epsilon
+    ],
+    minimumSignaturesRequired: 2
+  }]
 };
 
-events.alpha = {
+operations.alpha = {
   '@context': 'https://w3id.org/webledger/v1',
-  type: 'WebLedgerEvent',
-  operation: [{
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'CreateWebLedgerRecord',
-    record: {
-      '@context': 'https://schema.org/',
-      value: 'a2035188-372a-4afb-9cf2-7d99baebae88'
-    }
-  }]
+  type: 'CreateWebLedgerRecord',
+  record: {
+    '@context': 'https://schema.org/',
+    value: 'a2035188-372a-4afb-9cf2-7d99baebae88'
+  }
 };
-events.beta = {
+operations.beta = {
   '@context': 'https://w3id.org/webledger/v1',
-  type: 'WebLedgerEvent',
-  operation: [{
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'CreateWebLedgerRecord',
-    record: {
-      '@context': 'https://schema.org/',
-      value: '456866ac-dc86-4a62-81ab-6c15554d985c'
-    }
-  }]
+  type: 'CreateWebLedgerRecord',
+  record: {
+    '@context': 'https://schema.org/',
+    value: '456866ac-dc86-4a62-81ab-6c15554d985c'
+  }
 };
-events.gamma = {
+operations.gamma = {
   '@context': 'https://w3id.org/webledger/v1',
-  type: 'WebLedgerEvent',
-  operation: [{
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'CreateWebLedgerRecord',
-    record: {
-      '@context': 'https://schema.org/',
-      value: '8bbb6850-4afc-40d0-b8ff-d776844196bd'
-    }
-  }]
+  type: 'CreateWebLedgerRecord',
+  record: {
+    '@context': 'https://schema.org/',
+    value: '8bbb6850-4afc-40d0-b8ff-d776844196bd'
+  }
 };
 
 keys.alpha = {
