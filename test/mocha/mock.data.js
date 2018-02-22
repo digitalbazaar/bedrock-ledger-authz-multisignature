@@ -444,93 +444,88 @@ mock.ldDocuments = {};
 
 // alpha
 mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838'] = {
-  "@context": "https://w3id.org/identity/v1",
+  "@context": "https://w3id.org/security/v2",
   "id": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
   "publicKey": [{
     "id": 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1',
-    "type": "CryptographicKey",
+    "type": "RsaVerificationKey2018",
     "owner": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
     "publicKeyPem": keys.alpha.publicKey
   }]
 };
 mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
+  "@context": "https://w3id.org/security/v2",
+  "type": "RsaVerificationKey2018",
   "owner": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-  "label": "Signing Key 1",
   "id": 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1',
   "publicKeyPem": keys.alpha.publicKey
 };
 
 // beta
 mock.ldDocuments['did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'] = {
-  "@context": "https://w3id.org/identity/v1",
+  "@context": "https://w3id.org/security/v2",
   "id": "did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce",
   "publicKey": [{
     "id": 'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
-    "type": "CryptographicKey",
+    "type": "RsaVerificationKey2018",
     "owner": "did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce",
     "publicKeyPem": keys.beta.publicKey
   }]
 };
 mock.ldDocuments['did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
+  "@context": "https://w3id.org/security/v2",
+  "type": "RsaVerificationKey2018",
   "owner": "did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce",
-  "label": "Signing Key 1",
   "id": 'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1',
   "publicKeyPem": keys.beta.publicKey
 };
 
 // delta
 mock.ldDocuments['did:v1:79482a9c-e352-4b50-9d39-5594968bd81d'] = {
-  "@context": "https://w3id.org/identity/v1",
+  "@context": "https://w3id.org/security/v2",
   "id": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
   "publicKey": [{
     "id": 'did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1',
-    "type": "CryptographicKey",
+    "type": "RsaVerificationKey2018",
     "owner": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
     "publicKeyPem": keys.delta.publicKey
   }]
 };
 mock.ldDocuments['did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
+  "@context": "https://w3id.org/security/v2",
+  "type": "RsaVerificationKey2018",
   "owner": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
-  "label": "Signing Key 1",
   "id": 'did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1',
   "publicKeyPem": keys.delta.publicKey
 };
 
 // epsilon has 2 public keys
 mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'] = {
-  "@context": "https://w3id.org/identity/v1",
+  "@context": "https://w3id.org/security/v2",
   "id": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
   "publicKey": [{
     "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
-    "type": "CryptographicKey",
+    "type": "RsaVerificationKey2018",
     "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
     "publicKeyPem": keys.epsilon_1.publicKey
   }, {
     "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
-    "type": "CryptographicKey",
+    "type": "RsaVerificationKey2018",
     "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
     "publicKeyPem": keys.epsilon_2.publicKey
   }]
 };
 mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
+  "@context": "https://w3id.org/security/v2",
+  "type": "RsaVerificationKey2018",
   "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-  "label": "Signing Key 1",
   "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
   "publicKeyPem": keys.epsilon_1.publicKey
 };
 mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
+  "@context": "https://w3id.org/security/v2",
+  "type": "RsaVerificationKey2018",
   "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-  "label": "Signing Key 2",
   "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
   "publicKeyPem": keys.epsilon_2.publicKey
 };
