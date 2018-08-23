@@ -10,6 +10,7 @@
     "async": "^2.4.1",
     "bedrock": "^1.8.0",
     "bedrock-did-client": "digitalbazaar/bedrock-did-client#jsonld-1.1",
+    "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^2.0.3",
     "bedrock-ledger-context": "digitalbazaar/bedrock-ledger-context#master",
     "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
