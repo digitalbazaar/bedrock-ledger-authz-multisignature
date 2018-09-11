@@ -17,9 +17,9 @@
     "jsonld-signatures": "^2.1.1"
   },
   "peerDependencies": {
-    "bedrock": "^1.8.0",
+    "bedrock": "^1.12.0",
     "bedrock-did-client": "digitalbazaar/bedrock-did-client#jsonld-1.1",
-    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
+    "bedrock-ledger-node": "^1.0.0",
     "bedrock-validation": "^2.2.1"
   }
 }
