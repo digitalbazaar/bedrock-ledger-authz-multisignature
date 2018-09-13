@@ -18,7 +18,7 @@
     "bedrock-mongodb": "^4.0.0",
     "bedrock-permission": "^2.4.3",
     "bedrock-test": "^2.0.0",
-    "bedrock-validation": "^2.2.1",
+    "bedrock-validation": "^3.1.0",
     "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",
