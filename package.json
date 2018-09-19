@@ -13,12 +13,11 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature#readme",
   "dependencies": {
     "async": "^2.6.0",
-    "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "jsonld-signatures": "^2.1.1"
   },
   "peerDependencies": {
     "bedrock": "^1.12.0",
-    "bedrock-did-client": "digitalbazaar/bedrock-did-client#jsonld-1.1",
+    "bedrock-did-client": "^2.0.0",
     "bedrock-ledger-node": "^2.0.0",
     "bedrock-validation": "^3.1.0"
   }
