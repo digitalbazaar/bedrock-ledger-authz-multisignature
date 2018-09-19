@@ -9,7 +9,7 @@
   "dependencies": {
     "async": "^2.4.1",
     "bedrock": "^1.12.0",
-    "bedrock-did-client": "digitalbazaar/bedrock-did-client#jsonld-1.1",
+    "bedrock-did-client": "^2.0.0",
     "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^2.0.3",
     "bedrock-ledger-context": "^1.0.0",
@@ -19,7 +19,6 @@
     "bedrock-permission": "^2.4.3",
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^2.2.1",
-    "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",
     "lodash": "^4.17.5"

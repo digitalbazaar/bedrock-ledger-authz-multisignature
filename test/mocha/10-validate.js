@@ -53,8 +53,8 @@ describe('validate API', () => {
             });
         }]
       }, done));
-    it('validates an operation when approvedSigners specifies a publicKey', done =>
-      async.auto({
+    it('validates an operation when approvedSigners specifies a publicKey',
+      done => async.auto({
         signOne: callback => signDocument({
           creator: mockData.authorizedSigners.alpha,
           privateKeyPem: mockData.keys.alpha.privateKey,
@@ -151,8 +151,9 @@ describe('validate API', () => {
               details.keyResults[0].verified.should.be.false;
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
-              details.keyResults[0].error.name.should.contain(
-                'jsonld.LoadDocumentError');
+              // TODO: make assertions about specific error when did-io is
+              // finalized
+              should.exist(details.keyResults[0].error);
               callback();
             })
         ]
@@ -410,33 +411,32 @@ describe('validate API', () => {
       }, done));
 
     it('validates a ledgerConfiguration with two valid signatures and ' +
-      'one invalid',
-      done => async.auto({
-        signOne: callback => signDocument({
-          creator: mockData.authorizedSigners.alpha,
-          privateKeyPem: mockData.keys.alpha.privateKey,
-          doc: mockData.ledgerConfigurations.beta
-        }, callback),
-        signTwo: ['signOne', (results, callback) => signDocument({
-          creator: mockData.authorizedSigners.beta,
-          privateKeyPem: mockData.keys.beta.privateKey,
-          doc: results.signOne
-        }, callback)],
-        signThree: ['signTwo', (results, callback) => signDocument({
-          creator: mockData.authorizedSigners.gamma,
-          privateKeyPem: mockData.keys.gamma.privateKey,
-          doc: results.signTwo
-        }, callback)],
-        check: ['signThree', (results, callback) =>
-          brValidator.validate(
-            results.signThree,
-            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ]
-      }, done));
+      'one invalid', done => async.auto({
+      signOne: callback => signDocument({
+        creator: mockData.authorizedSigners.alpha,
+        privateKeyPem: mockData.keys.alpha.privateKey,
+        doc: mockData.ledgerConfigurations.beta
+      }, callback),
+      signTwo: ['signOne', (results, callback) => signDocument({
+        creator: mockData.authorizedSigners.beta,
+        privateKeyPem: mockData.keys.beta.privateKey,
+        doc: results.signOne
+      }, callback)],
+      signThree: ['signTwo', (results, callback) => signDocument({
+        creator: mockData.authorizedSigners.gamma,
+        privateKeyPem: mockData.keys.gamma.privateKey,
+        doc: results.signTwo
+      }, callback)],
+      check: ['signThree', (results, callback) =>
+        brValidator.validate(
+          results.signThree,
+          mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
+          err => {
+            assertNoError(err);
+            callback();
+          })
+      ]
+    }, done));
 
     it('does not validate if the public key cannot be validated', done => {
       async.auto({
@@ -456,8 +456,9 @@ describe('validate API', () => {
               details.keyResults[0].verified.should.be.false;
               details.keyResults[0].publicKey.should.equal(
                 mockData.authorizedSigners.gamma);
-              details.keyResults[0].error.name.should.contain(
-                'jsonld.LoadDocumentError');
+              // TODO: make assertions about specific error when did-io is
+              // finalized
+              should.exist(details.keyResults[0].error);
               callback();
             })
         ]
