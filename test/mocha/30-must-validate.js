@@ -12,20 +12,23 @@ describe('mustValidate API', () => {
       const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
-      brValidator.mustValidate(
-        ledgerConfiguration, testConfig, (err, result) => {
-          should.not.exist(err);
-          should.exist(result);
-          result.should.be.a('boolean');
-          result.should.be.true;
-          done();
-        });
+      brValidator.mustValidate({
+        validatorInput: ledgerConfiguration, validatorConfig: testConfig
+      }, (err, result) => {
+        should.not.exist(err);
+        should.exist(result);
+        result.should.be.a('boolean');
+        result.should.be.true;
+        done();
+      });
     });
     it('should return false on an operation', done => {
       const operation = mockData.operations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
-      brValidator.mustValidate(operation, testConfig, (err, result) => {
+      brValidator.mustValidate({
+        validatorInput: operation, validatorConfig: testConfig
+      }, (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -39,7 +42,9 @@ describe('mustValidate API', () => {
       const operation = mockData.operations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
-      brValidator.mustValidate(operation, testConfig, (err, result) => {
+      brValidator.mustValidate({
+        validatorInput: operation, validatorConfig: testConfig},
+      (err, result) => {
         should.not.exist(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -51,14 +56,15 @@ describe('mustValidate API', () => {
       const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
-      brValidator.mustValidate(
-        ledgerConfiguration, testConfig, (err, result) => {
-          should.not.exist(err);
-          should.exist(result);
-          result.should.be.a('boolean');
-          result.should.be.false;
-          done();
-        });
+      brValidator.mustValidate({
+        validatorInput: ledgerConfiguration, validatorConfig: testConfig
+      }, (err, result) => {
+        should.not.exist(err);
+        should.exist(result);
+        result.should.be.a('boolean');
+        result.should.be.false;
+        done();
+      });
     });
   });
 });

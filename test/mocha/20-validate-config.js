@@ -14,7 +14,7 @@ describe('validateConfiguration API', () => {
   it('validates a proper validator config', done => {
     const testConfig =
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
-    brValidator.validateConfiguration(testConfig, err => {
+    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
       should.not.exist(err);
       done();
     });
@@ -23,7 +23,7 @@ describe('validateConfiguration API', () => {
     const testConfig = bedrock.util.clone(
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.approvedSigner;
-    brValidator.validateConfiguration(testConfig, err => {
+    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
       should.exist(err);
       err.name.should.equal('ValidationError');
       done();
@@ -33,7 +33,7 @@ describe('validateConfiguration API', () => {
     const testConfig = bedrock.util.clone(
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.minimumSignaturesRequired;
-    brValidator.validateConfiguration(testConfig, err => {
+    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
       should.exist(err);
       err.name.should.equal('ValidationError');
       done();

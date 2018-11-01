@@ -20,15 +20,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: mockData.operations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .operationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done);
     });
     it('validates an operation that requires two signatures', done =>
@@ -43,15 +42,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) => {
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.beta.operationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            });
-        }]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.beta
+            .operationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done));
     it('validates an operation when approvedSigners specifies a publicKey',
       done => async.auto({
@@ -65,15 +63,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) => {
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.gamma.operationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            });
-        }]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.gamma
+            .operationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done));
     it('does not validate operation signed twice by same owner', done =>
       async.auto({
@@ -87,22 +84,22 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) => {
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.beta.operationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.input.should.be.an('object');
-              details.trustedSigners.should.be.an('object');
-              details.signatureCount.should.equal(2);
-              details.verifiedSignatures.should.equal(1);
-              details.minimumSignaturesRequired.should.equal(2);
-              details.keyResults.should.be.an('array');
-              callback();
-            });
-        }]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.beta
+            .operationValidator[0],
+        }, err => {
+          should.exist(err);
+          err.name.should.equal('ValidationError');
+          const {details} = err;
+          details.validatorInput.should.be.an('object');
+          details.trustedSigners.should.be.an('object');
+          details.signatureCount.should.equal(2);
+          details.verifiedSignatures.should.equal(1);
+          details.minimumSignaturesRequired.should.equal(2);
+          details.keyResults.should.be.an('array');
+          callback();
+        })]
       }, done));
 
     it('validates an operation with two valid signatures and one invalid',
@@ -122,15 +119,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.gamma.privateKey,
           doc: results.signTwo
         }, callback)],
-        check: ['signThree', (results, callback) => {
-          brValidator.validate(
-            results.signThree,
-            mockData.ledgerConfigurations.beta.operationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            });
-        }]
+        check: ['signThree', (results, callback) => brValidator.validate({
+          validatorInput: results.signThree,
+          validatorConfig: mockData.ledgerConfigurations.beta
+            .operationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done));
 
     it('does not validate if the public key cannot be validated', done => {
@@ -140,23 +136,22 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.gamma.privateKey,
           doc: mockData.operations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.verifiedSignatures.should.equal(0);
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.gamma);
-              // TODO: make assertions about specific error when did-io is
-              // finalized
-              should.exist(details.keyResults[0].error);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .operationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.verifiedSignatures.should.equal(0);
+          details.keyResults[0].verified.should.be.false;
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.gamma);
+          // TODO: make assertions about specific error when did-io is
+          // finalized
+          should.exist(details.keyResults[0].error);
+          callback();
+        })]
       }, done);
     });
 
@@ -169,19 +164,18 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.delta.privateKey,
           doc: mockData.operations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.alpha);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .operationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.keyResults[0].verified.should.be.false;
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.alpha);
+          callback();
+        })]
       }, done);
     });
 
@@ -193,19 +187,18 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: mockData.operations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.verifiedSignatures.should.equal(0);
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.beta);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .operationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.verifiedSignatures.should.equal(0);
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.beta);
+          callback();
+        })]
       }, done);
     });
   }); // end operationValidator
@@ -218,16 +211,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha
-              .ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done);
     });
     // epsilon has two valid key pairs
@@ -238,30 +229,27 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.epsilon_1.privateKey,
           doc: mockData.ledgerConfigurations.delta
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.delta
-              .ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ],
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.delta
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })],
         sign2: ['check', (results, callback) => signDocument({
           creator: mockData.authorizedSigners.epsilon_2,
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
           doc: mockData.ledgerConfigurations.delta
         }, callback)],
-        check2: ['sign2', (results, callback) =>
-          brValidator.validate(
-            results.sign2,
-            mockData.ledgerConfigurations.delta.ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ]
+        check2: ['sign2', (results, callback) => brValidator.validate({
+          validatorInput: results.sign2,
+          validatorConfig: mockData.ledgerConfigurations.delta
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done);
     });
 
@@ -277,15 +265,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) => {
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            });
-        }]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.beta
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done));
 
     it('does not validate a ledgerConfiguration with 2/3 signatures', done =>
@@ -300,18 +287,17 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) =>
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.gamma.ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.signatureCount.should.equal(2);
-              details.minimumSignaturesRequired.should.equal(3);
-              callback();
-            })
-        ]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.gamma
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.signatureCount.should.equal(2);
+          details.minimumSignaturesRequired.should.equal(3);
+          callback();
+        })]
       }, done));
 
     it('validates a ledgerConfiguration with 3 of 3 signatures', done =>
@@ -331,15 +317,14 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
           doc: results.signTwo
         }, callback)],
-        check: ['signThree', (results, callback) =>
-          brValidator.validate(
-            results.signThree,
-            mockData.ledgerConfigurations.gamma.ledgerConfigurationValidator[0],
-            err => {
-              assertNoError(err);
-              callback();
-            })
-        ]
+        check: ['signThree', (results, callback) => brValidator.validate({
+          validatorInput: results.signThree,
+          validatorConfig: mockData.ledgerConfigurations.gamma
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          assertNoError(err);
+          callback();
+        })]
       }, done));
 
     it('does not validate ledgerConfiguration signed twice by same owner',
@@ -354,21 +339,22 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.alpha.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) =>
-          brValidator.validate(results.signTwo,
-            mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.input.should.be.an('object');
-              details.trustedSigners.should.be.an('object');
-              details.signatureCount.should.equal(2);
-              details.verifiedSignatures.should.equal(1);
-              details.minimumSignaturesRequired.should.equal(2);
-              details.keyResults.should.be.an('array');
-              callback();
-            })
-        ]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.beta
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          err.name.should.equal('ValidationError');
+          const {details} = err;
+          details.validatorInput.should.be.an('object');
+          details.trustedSigners.should.be.an('object');
+          details.signatureCount.should.equal(2);
+          details.verifiedSignatures.should.equal(1);
+          details.minimumSignaturesRequired.should.equal(2);
+          details.keyResults.should.be.an('array');
+          callback();
+        })]
       }, done));
 
     it('does not validate ledgerConfiguration signed twice by owner ' +
@@ -384,30 +370,29 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.epsilon_2.privateKey,
           doc: results.signOne
         }, callback)],
-        check: ['signTwo', (results, callback) =>
-          brValidator.validate(
-            results.signTwo,
-            mockData.ledgerConfigurations.epsilon
-              .ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.input.should.be.an('object');
-              details.trustedSigners.should.be.an('object');
-              details.signatureCount.should.equal(2);
-              details.verifiedSignatures.should.equal(1);
-              details.minimumSignaturesRequired.should.equal(2);
-              details.keyResults.should.be.an('array');
-              const keyResults = details.keyResults;
-              // shows that both the signatures provided by epsilon are valid
-              keyResults.filter(k => k.verified).map(k => k.publicKey)
-                .should.have.same.members([
-                  mockData.authorizedSigners.epsilon_1,
-                  mockData.authorizedSigners.epsilon_2
-                ]);
-              callback();
-            })
-        ]
+        check: ['signTwo', (results, callback) => brValidator.validate({
+          validatorInput: results.signTwo,
+          validatorConfig: mockData.ledgerConfigurations.epsilon
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          err.name.should.equal('ValidationError');
+          const {details} = err;
+          details.validatorInput.should.be.an('object');
+          details.trustedSigners.should.be.an('object');
+          details.signatureCount.should.equal(2);
+          details.verifiedSignatures.should.equal(1);
+          details.minimumSignaturesRequired.should.equal(2);
+          details.keyResults.should.be.an('array');
+          const keyResults = details.keyResults;
+          // shows that both the signatures provided by epsilon are valid
+          keyResults.filter(k => k.verified).map(k => k.publicKey)
+            .should.have.same.members([
+              mockData.authorizedSigners.epsilon_1,
+              mockData.authorizedSigners.epsilon_2
+            ]);
+          callback();
+        })]
       }, done));
 
     it('validates a ledgerConfiguration with two valid signatures and ' +
@@ -427,15 +412,14 @@ describe('validate API', () => {
         privateKeyPem: mockData.keys.gamma.privateKey,
         doc: results.signTwo
       }, callback)],
-      check: ['signThree', (results, callback) =>
-        brValidator.validate(
-          results.signThree,
-          mockData.ledgerConfigurations.beta.ledgerConfigurationValidator[0],
-          err => {
-            assertNoError(err);
-            callback();
-          })
-      ]
+      check: ['signThree', (results, callback) => brValidator.validate({
+        validatorInput: results.signThree,
+        validatorConfig: mockData.ledgerConfigurations.beta
+          .ledgerConfigurationValidator[0],
+      }, err => {
+        assertNoError(err);
+        callback();
+      })]
     }, done));
 
     it('does not validate if the public key cannot be validated', done => {
@@ -445,23 +429,22 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.gamma.privateKey,
           doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.verifiedSignatures.should.equal(0);
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.gamma);
-              // TODO: make assertions about specific error when did-io is
-              // finalized
-              should.exist(details.keyResults[0].error);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.verifiedSignatures.should.equal(0);
+          details.keyResults[0].verified.should.be.false;
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.gamma);
+          // TODO: make assertions about specific error when did-io is
+          // finalized
+          should.exist(details.keyResults[0].error);
+          callback();
+        })]
       }, done);
     });
 
@@ -473,19 +456,18 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.delta.privateKey,
           doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.keyResults[0].verified.should.be.false;
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.alpha);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.keyResults[0].verified.should.be.false;
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.alpha);
+          callback();
+        })]
       }, done);
     });
 
@@ -497,19 +479,18 @@ describe('validate API', () => {
           privateKeyPem: mockData.keys.beta.privateKey,
           doc: mockData.ledgerConfigurations.alpha
         }, callback),
-        check: ['sign', (results, callback) =>
-          brValidator.validate(
-            results.sign,
-            mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0],
-            err => {
-              should.exist(err);
-              const details = err.details;
-              details.verifiedSignatures.should.equal(0);
-              details.keyResults[0].publicKey.should.equal(
-                mockData.authorizedSigners.beta);
-              callback();
-            })
-        ]
+        check: ['sign', (results, callback) => brValidator.validate({
+          validatorInput: results.sign,
+          validatorConfig: mockData.ledgerConfigurations.alpha
+            .ledgerConfigurationValidator[0],
+        }, err => {
+          should.exist(err);
+          const details = err.details;
+          details.verifiedSignatures.should.equal(0);
+          details.keyResults[0].publicKey.should.equal(
+            mockData.authorizedSigners.beta);
+          callback();
+        })]
       }, done);
     });
   }); // end ledgerConfigurationValidator
