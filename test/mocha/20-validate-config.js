@@ -14,29 +14,37 @@ describe('validateConfiguration API', () => {
   it('validates a proper validator config', done => {
     const testConfig =
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0];
-    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
-      should.not.exist(err);
-      done();
-    });
+    brValidator.validateConfiguration(
+      {validatorConfig: testConfig}, (err, result) => {
+        assertNoError(err);
+        result.valid.should.be.true;
+        done();
+      });
   });
   it('returns ValidationError on missing approvedSigner', done => {
     const testConfig = bedrock.util.clone(
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.approvedSigner;
-    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
-      should.exist(err);
-      err.name.should.equal('ValidationError');
-      done();
-    });
+    brValidator.validateConfiguration(
+      {validatorConfig: testConfig}, (err, result) => {
+        assertNoError(err);
+        result.valid.should.be.false;
+        const {error} = result;
+        error.name.should.equal('ValidationError');
+        done();
+      });
   });
   it('returns ValidationError on missing minimumSignaturesRequired', done => {
     const testConfig = bedrock.util.clone(
       mockData.ledgerConfigurations.alpha.ledgerConfigurationValidator[0]);
     delete testConfig.minimumSignaturesRequired;
-    brValidator.validateConfiguration({validatorConfig: testConfig}, err => {
-      should.exist(err);
-      err.name.should.equal('ValidationError');
-      done();
-    });
+    brValidator.validateConfiguration(
+      {validatorConfig: testConfig}, (err, result) => {
+        assertNoError(err);
+        result.valid.should.be.false;
+        const {error} = result;
+        error.name.should.equal('ValidationError');
+        done();
+      });
   });
 });

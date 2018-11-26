@@ -24,8 +24,9 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .operationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done);
@@ -46,8 +47,9 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.beta
             .operationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done));
@@ -67,8 +69,9 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.gamma
             .operationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done));
@@ -88,10 +91,13 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.beta
             .operationValidator[0],
-        }, err => {
-          should.exist(err);
-          err.name.should.equal('ValidationError');
-          const {details} = err;
+        }, (err, result) => {
+          assertNoError(err);
+          should.exist(result);
+          result.valid.should.be.false;
+          const {error} = result;
+          error.name.should.equal('ValidationError');
+          const {details} = error;
           details.validatorInput.should.be.an('object');
           details.trustedSigners.should.be.an('object');
           details.signatureCount.should.equal(2);
@@ -123,8 +129,9 @@ describe('validate API', () => {
           validatorInput: results.signThree,
           validatorConfig: mockData.ledgerConfigurations.beta
             .operationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done));
@@ -140,9 +147,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .operationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.verifiedSignatures.should.equal(0);
           details.keyResults[0].verified.should.be.false;
           details.keyResults[0].publicKey.should.equal(
@@ -168,9 +177,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .operationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.keyResults[0].verified.should.be.false;
           details.keyResults[0].publicKey.should.equal(
             mockData.authorizedSigners.alpha);
@@ -191,9 +202,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .operationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.verifiedSignatures.should.equal(0);
           details.keyResults[0].publicKey.should.equal(
             mockData.authorizedSigners.beta);
@@ -215,8 +228,9 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .ledgerConfigurationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done);
@@ -233,8 +247,9 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.delta
             .ledgerConfigurationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })],
         sign2: ['check', (results, callback) => signDocument({
@@ -246,8 +261,9 @@ describe('validate API', () => {
           validatorInput: results.sign2,
           validatorConfig: mockData.ledgerConfigurations.delta
             .ledgerConfigurationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done);
@@ -269,8 +285,9 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.beta
             .ledgerConfigurationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done));
@@ -291,9 +308,11 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.gamma
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.signatureCount.should.equal(2);
           details.minimumSignaturesRequired.should.equal(3);
           callback();
@@ -321,8 +340,9 @@ describe('validate API', () => {
           validatorInput: results.signThree,
           validatorConfig: mockData.ledgerConfigurations.gamma
             .ledgerConfigurationValidator[0],
-        }, err => {
+        }, (err, result) => {
           assertNoError(err);
+          result.valid.should.be.true;
           callback();
         })]
       }, done));
@@ -343,10 +363,11 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.beta
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          err.name.should.equal('ValidationError');
-          const {details} = err;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.validatorInput.should.be.an('object');
           details.trustedSigners.should.be.an('object');
           details.signatureCount.should.equal(2);
@@ -374,10 +395,11 @@ describe('validate API', () => {
           validatorInput: results.signTwo,
           validatorConfig: mockData.ledgerConfigurations.epsilon
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          err.name.should.equal('ValidationError');
-          const {details} = err;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.validatorInput.should.be.an('object');
           details.trustedSigners.should.be.an('object');
           details.signatureCount.should.equal(2);
@@ -416,8 +438,9 @@ describe('validate API', () => {
         validatorInput: results.signThree,
         validatorConfig: mockData.ledgerConfigurations.beta
           .ledgerConfigurationValidator[0],
-      }, err => {
+      }, (err, result) => {
         assertNoError(err);
+        result.valid.should.be.true;
         callback();
       })]
     }, done));
@@ -433,9 +456,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.verifiedSignatures.should.equal(0);
           details.keyResults[0].verified.should.be.false;
           details.keyResults[0].publicKey.should.equal(
@@ -460,9 +485,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.keyResults[0].verified.should.be.false;
           details.keyResults[0].publicKey.should.equal(
             mockData.authorizedSigners.alpha);
@@ -483,9 +510,11 @@ describe('validate API', () => {
           validatorInput: results.sign,
           validatorConfig: mockData.ledgerConfigurations.alpha
             .ledgerConfigurationValidator[0],
-        }, err => {
-          should.exist(err);
-          const details = err.details;
+        }, (err, result) => {
+          assertNoError(err);
+          result.valid.should.be.false;
+          const {error} = result;
+          const details = error.details;
           details.verifiedSignatures.should.equal(0);
           details.keyResults[0].publicKey.should.equal(
             mockData.authorizedSigners.beta);

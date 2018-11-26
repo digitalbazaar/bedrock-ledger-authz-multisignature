@@ -38,6 +38,7 @@ const schema = {
       },
     },
     minimumSignaturesRequired: {
+      minimum: 1,
       type: 'integer'
     },
     approvedSigner: {
