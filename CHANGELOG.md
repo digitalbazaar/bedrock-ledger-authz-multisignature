@@ -1,5 +1,12 @@
 # bedrock-ledger-validator-signature ChangeLog
 
+## 3.0.0 - TBD
+
+### Changed
+- **BREAKING** APIs utilize named parameters.
+- **BREAKING** Validation APIs do not throw on error, instead a there is always
+  a return value of {valid: <bool>, error: <Error>}
+
 ## 2.0.1 - 2018-09-20
 
 ### Changed
