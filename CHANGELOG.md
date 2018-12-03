@@ -1,6 +1,6 @@
 # bedrock-ledger-validator-signature ChangeLog
 
-## 3.0.0 - TBD
+## 3.0.0 - 2018-12-03
 
 ### Changed
 - **BREAKING** APIs utilize named parameters.
