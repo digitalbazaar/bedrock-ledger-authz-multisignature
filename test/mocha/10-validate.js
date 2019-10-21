@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
-const bedrock = require('bedrock');
 const async = require('async');
 const brValidator = require('bedrock-ledger-validator-signature');
-const jsigs = require('jsonld-signatures');
-jsigs.use('jsonld', bedrock.jsonld);
+const {signDocument} = require('./helpers');
 
 const mockData = require('./mock.data');
 
@@ -524,16 +522,3 @@ describe('validate API', () => {
     });
   }); // end ledgerConfigurationValidator
 });
-
-function signDocument(options, callback) {
-  jsigs.sign(options.doc, {
-    algorithm: 'RsaSignature2018',
-    privateKeyPem: options.privateKeyPem,
-    creator: options.creator
-  }, (err, result) => {
-    if(err) {
-      return callback(err);
-    }
-    callback(null, result);
-  });
-}
