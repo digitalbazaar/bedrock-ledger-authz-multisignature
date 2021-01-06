@@ -446,11 +446,11 @@ mock.ldDocuments = {};
 mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838'] = {
   "@context": "https://w3id.org/security/v2",
   "id": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-  "publicKey": [{
+  "assertionMethod": [{
     "id": 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1',
     "type": "RsaVerificationKey2018",
-    "owner": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-    "publicKeyPem": keys.alpha.publicKey
+    "controller": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
+    "publicKeyPem": keys.alpha.publicKey,
   }]
 };
 mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1'] = {
@@ -530,27 +530,27 @@ mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'] = {
   "publicKeyPem": keys.epsilon_2.publicKey
 };
 
-const bedrock = require('bedrock');
-const config = bedrock.config;
-const jsonld = bedrock.jsonld;
-const oldLoader = jsonld.documentLoader;
-jsonld.documentLoader = function(url, callback) {
-  if(Object.keys(mock.ldDocuments).includes(url)) {
-    return callback(null, {
-      contextUrl: null,
-      document: mock.ldDocuments[url],
-      documentUrl: url
-    });
-  }
-  const regex = new RegExp(
-    config['did-client']['authorization-io'].didBaseUrl + '/(.*?)$');
-  const didMatch = url.match(regex);
-  if(didMatch && didMatch.length === 2 && didMatch[1] in mock.ldDocuments) {
-    return callback(null, {
-      contextUrl: null,
-      document: mock.ldDocuments[didMatch[1]],
-      documentUrl: url
-    });
-  }
-  oldLoader(url, callback);
-};
+// const bedrock = require('bedrock');
+// const config = bedrock.config;
+// const jsonld = bedrock.jsonld;
+// const oldLoader = jsonld.documentLoader;
+// jsonld.documentLoader = function(url, callback) {
+//   if(Object.keys(mock.ldDocuments).includes(url)) {
+//     return callback(null, {
+//       contextUrl: null,
+//       document: mock.ldDocuments[url],
+//       documentUrl: url
+//     });
+//   }
+//   const regex = new RegExp(
+//     config['did-client']['authorization-io'].didBaseUrl + '/(.*?)$');
+//   const didMatch = url.match(regex);
+//   if(didMatch && didMatch.length === 2 && didMatch[1] in mock.ldDocuments) {
+//     return callback(null, {
+//       contextUrl: null,
+//       document: mock.ldDocuments[didMatch[1]],
+//       documentUrl: url
+//     });
+//   }
+//   oldLoader(url, callback);
+// };

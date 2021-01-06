@@ -1,12 +1,10 @@
 /*
- * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
 const bedrock = require('bedrock');
 const brValidator = require('bedrock-ledger-validator-signature');
-const jsigs = require('jsonld-signatures');
-jsigs.use('jsonld', bedrock.jsonld);
 
 const mockData = require('./mock.data');
 

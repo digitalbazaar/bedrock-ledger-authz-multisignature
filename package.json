@@ -13,12 +13,15 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature#readme",
   "dependencies": {
     "async": "^2.6.0",
-    "jsonld-signatures": "^2.1.1"
+    "jsonld-signatures": "^4.4.0"
   },
   "peerDependencies": {
-    "bedrock": "^1.12.0",
-    "bedrock-did-client": "^2.0.0",
-    "bedrock-ledger-node": "^4.0.0",
+    "bedrock": "^2.0.0",
+    "bedrock-ledger-node": "4 - 9",
     "bedrock-validation": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.17.0",
+    "eslint-config-digitalbazaar": "^2.6.1"
   }
 }
